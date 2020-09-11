@@ -111,7 +111,6 @@ class CalcResults {
 		return lvlEntry(lvl).endurance;
 	}
 
-	// todo: add lvladjust parameter for ranges and make static
 	private static function estimateFe(hp:Null<Float>, ac:Null<Float>, dmg:Null<Float>, hit:Null<Float>, lvl:Null<Int>, ?lvlAdjustment:Int = 0):Float {
 		if (dmg != null && hit != null) {
 			lvl = if (lvl != null) lvl else estimateLvlFromDmg(dmg);
