@@ -1,12 +1,7 @@
 import js.html.InputElement;
+using Extensions;
 
-@:generic
-interface Adapter<T> {
-	public function get():Null<T>;
-	public function set(val:T):Void;
-}
-
-class IntAdapter implements Adapter<Int> {
+class IntAdapter  {
     private final input: InputElement;
 
     public function new(input:InputElement) {
@@ -23,7 +18,7 @@ class IntAdapter implements Adapter<Int> {
             return value;
         }
 
-        throw "could not parse " + input.value + " in " + input;
+        throw 'could not parse ${input} as int';
     }
 
 	public function set(val:Int):Void {
@@ -31,7 +26,7 @@ class IntAdapter implements Adapter<Int> {
     }
 }
 
-class FloatAdapter implements Adapter<Float> {
+class FloatAdapter  {
     private final input: InputElement;
 
     public function new(input:InputElement) {
@@ -48,10 +43,35 @@ class FloatAdapter implements Adapter<Float> {
             return value;
         }
 
-        throw "could not parse " + input.value + " in " + input;
+        throw 'could not parse ${input} as float';
     }
 
 	public function set(val:Float):Void {
-        input.placeholder = Std.string(val);
+        input.placeholder = val.toString(1);
+    }
+}
+
+class RangeAdapter {
+    private final input: InputElement;
+
+    public function new(input:InputElement) {
+        this.input = input;
+    }
+
+	public function get():Null<Float> {
+        if (input.value.length == 0) {
+            return null;
+        }
+
+        final value:Null<Float> = Std.parseFloat(input.value);
+        if (value != null) {
+            return value;
+        }
+
+        throw 'could not parse ${input} as float';
+    }
+
+	public function set(val:Range):Void {
+        input.placeholder = '${val.min.toString(1)}—${val.max.toString(1)}';
     }
 }

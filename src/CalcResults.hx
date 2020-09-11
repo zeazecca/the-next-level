@@ -1,10 +1,11 @@
+import haxe.display.Display.Package;
 import Data;
 
 using Extensions;
 using Lambda;
 
 class CalcResults {
-	private static inline function lvlEntry(lvl:Int):XpEntry {
+	private static function lvlEntry(lvl:Int):XpEntry {
 		final entry:Null<XpEntry> = Data.STATS.find((entry) -> entry.lvl == lvl);
 		if (entry == null) {
 			throw "level not in data table: " + lvl;
@@ -13,57 +14,116 @@ class CalcResults {
 		return entry;
 	}
 
-	private static inline function isCloserTo(a:Float, b:Float, target:Float):Bool {
+	private static function isCloserTo(a:Float, b:Float, target:Float):Bool {
 		return Math.abs(a - target) < Math.abs(b - target);
 	}
 
-	private static inline function estimateLvlFromHp(hp:Float):Int {
+	private static function estimateLvlFromHp(hp:Float):Int {
 		return Data.STATS.slice(1).fold((entry, best : XpEntry) -> if (isCloserTo(entry.hp, best.hp, hp)) entry else best, Data.STATS[0]).lvl;
 	}
 
-	private static inline function estimateLvlFromDmg(dmg:Float):Int {
+	private static function estimateLvlFromDmg(dmg:Float):Int {
 		return Data.STATS.slice(1).fold((entry, best : XpEntry) -> if (isCloserTo(entry.dmg, best.dmg, dmg)) entry else best, Data.STATS[0]).lvl;
 	}
 
-	private static inline function playerHitProb(lvl:Int, ac:Float):Float {
+	private static function playerHitProb(lvl:Int, ac:Float):Float {
 		final acDiff:Float = ac - lvlEntry(lvl).ac;
 		final hitDiff:Float = acDiff * Data.PROB_INCREMENTS;
 		return (Data.PLAYER_HITPROB - hitDiff).clamp(Data.MIN_HIT, Data.MAX_HIT);
 	}
 
-	private static inline function creatureHitProb(lvl:Int, hit:Float):Float {
+	private static function creatureHitProb(lvl:Int, hit:Float):Float {
 		final atkDiff:Float = hit - lvlEntry(lvl).hit;
 		final hitDiff:Float = atkDiff * Data.PROB_INCREMENTS;
 		return (Data.CREATURE_HITPROB + hitDiff).clamp(Data.MIN_HIT, Data.MAX_HIT);
 	}
 
-	private static inline function estimateLvlFromFe(ferocity:Float):Int {
+	private static function estimateLvlFromFe(ferocity:Float):Int {
 		return Data.STATS.slice(1)
 			.fold((entry, best : XpEntry) -> if (isCloserTo(entry.ferocity, best.ferocity, ferocity)) entry else best, Data.STATS[0])
 			.lvl;
 	}
 
-	private static inline function estimateLvlFromEn(endurance:Float):Int {
+	private static function estimateLvlFromEn(endurance:Float):Int {
 		return Data.STATS.slice(1)
 			.fold((entry, best : XpEntry) -> if (isCloserTo(entry.endurance, best.endurance, endurance)) entry else best, Data.STATS[0])
 			.lvl;
 	}
 
-	private static inline function estimateLvlFromEnFe(endurance:Float, ferocity:Float):Int {
+	private static function estimateLvlFromEnFe(endurance:Float, ferocity:Float):Int {
 		final prod:Float = endurance * ferocity;
 		return Data.STATS.slice(1).fold((entry, best : XpEntry) -> if (isCloserTo(entry.product, best.product, prod)) entry else best, Data.STATS[0]).lvl;
 	}
 
-	private static inline function acAdjustment(hp:Float, endurance:Float):Float {
+	private static function acAdjustment(hp:Float, endurance:Float):Float {
 		final hitProb:Float = (hp / endurance).clamp(Data.MIN_HIT, Data.MAX_HIT);
 		final hitAdjustment:Float = hitProb - Data.PLAYER_HITPROB;
 		return hitAdjustment / Data.PROB_INCREMENTS;
 	}
 
-	private static inline function hitAdjustment(dmg:Float, ferocity:Float):Float {
+	private static function hitAdjustment(dmg:Float, ferocity:Float):Float {
 		final hitProb:Float = (ferocity / dmg).clamp(Data.MIN_HIT, Data.MAX_HIT);
 		final hitAdjustment:Float = hitProb - Data.CREATURE_HITPROB;
 		return hitAdjustment / Data.PROB_INCREMENTS;
+	}
+
+	private static function getEnduranceRange(hp:Null<Float>, ac:Null<Float>, dmg:Null<Float>, hit:Null<Float>, lvl:Int):Range {
+		var endurance:Float = estimateEn(hp, ac, dmg, hit, lvl);
+		if (lvl == Data.MIN_LVL) {
+			final next:Float = estimateEn(hp, ac, dmg, hit, lvl, 1);
+			return new Range(0.0, (endurance + next) / 2.0);
+		} else if (lvl == Data.MAX_LVL) {
+			final prev:Float = estimateEn(hp, ac, dmg, hit, lvl, -1);
+			return new Range(prev, endurance + (endurance -prev));
+		}
+
+		final prev:Float = estimateEn(hp, ac, dmg, hit, lvl, -1);
+		final next:Float = estimateEn(hp, ac, dmg, hit, lvl, 1);
+		return new Range((prev + endurance) / 2.0, (endurance + next) / 2.0);
+	}
+
+	private static function getFerocityRange(hp:Null<Float>, ac:Null<Float>, dmg:Null<Float>, hit:Null<Float>, lvl:Int):Range {
+		var ferocity:Float = estimateFe(hp, ac, dmg, hit, lvl);
+		if (lvl == Data.MIN_LVL) {
+			final next:Float = estimateFe(hp, ac, dmg, hit, lvl, 1);
+			return new Range(0.0, (ferocity + next) / 2.0);
+		} else if (lvl == Data.MAX_LVL) {
+			final prev:Float = estimateFe(hp, ac, dmg, hit, lvl, -1);
+			return new Range(prev, ferocity + (ferocity -prev));
+		}
+
+		final prev:Float = estimateFe(hp, ac, dmg, hit, lvl, -1);
+		final next:Float = estimateFe(hp, ac, dmg, hit, lvl, 1);
+		return new Range((prev + ferocity) / 2.0, (ferocity + next) / 2.0);
+	}
+
+	private static function estimateEn(hp:Null<Float>, ac:Null<Float>, dmg:Null<Float>, hit:Null<Float>, lvl:Null<Int>, ?lvlAdjustment:Int = 0):Float {
+		if (hp != null && ac != null) {
+			lvl = (if (lvl != null) lvl else estimateLvlFromHp(hp));
+			return hp / playerHitProb(lvl, ac);
+		} else if (hp == null && dmg != null) {
+			final ferocity:Float = estimateFe(hp, ac, dmg, hit, lvl, lvlAdjustment);
+			lvl = (if (lvl != null) lvl else estimateLvlFromFe(ferocity)) + lvlAdjustment;
+			return lvlEntry(lvl).product / ferocity;
+		}
+
+		lvl = (if (lvl != null) lvl else Data.STATS[0].lvl) + lvlAdjustment;
+		return lvlEntry(lvl).endurance;
+	}
+
+	// todo: add lvladjust parameter for ranges and make static
+	private static function estimateFe(hp:Null<Float>, ac:Null<Float>, dmg:Null<Float>, hit:Null<Float>, lvl:Null<Int>, ?lvlAdjustment:Int = 0):Float {
+		if (dmg != null && hit != null) {
+			lvl = if (lvl != null) lvl else estimateLvlFromDmg(dmg);
+			return dmg * creatureHitProb(lvl, hit);
+		} else if (dmg == null && hp != null) {
+			final endurance:Float = estimateEn(hp, ac, dmg, hit, lvl, lvlAdjustment);
+			lvl = (if (lvl != null) lvl else estimateLvlFromEn(endurance)) + lvlAdjustment;
+			return lvlEntry(lvl).product / endurance;
+		}
+		
+		lvl = (if (lvl != null) lvl else Data.STATS[0].lvl) + lvlAdjustment;
+		return lvlEntry(lvl).ferocity;
 	}
 
 	private var enMem:Null<Float>;
@@ -82,38 +142,12 @@ class CalcResults {
 		hitMem = hit;
 	}
 
-	private function estimateEn():Float {
-		if (hpMem != null && acMem != null) {
-			final lvl:Int = if (lvlMem != null) lvlMem else estimateLvlFromHp(hpMem);
-			return hpMem / playerHitProb(lvl, acMem);
-		} else if (hpMem == null && dmgMem != null) {
-			final lvl:Int = if (lvlMem != null) lvlMem else estimateLvlFromFe(ferocity());
-			return lvlEntry(lvl).product / ferocity();
-		}
-
-		final lvl:Int = if (lvlMem != null) lvlMem else Data.STATS[0].lvl;
-		return lvlEntry(lvl).endurance;
-	}
-
-	private function estimateFe():Float {
-		if (dmgMem != null && hitMem != null) {
-			final lvl:Int = if (lvlMem != null) lvlMem else estimateLvlFromDmg(dmgMem);
-			return dmgMem * creatureHitProb(lvl, hitMem);
-		} else if (dmgMem == null && hpMem != null) {
-			final lvl:Int = if (lvlMem != null) lvlMem else estimateLvlFromEn(endurance());
-			return lvlEntry(lvl).product / endurance();
-		}
-
-		final lvl:Int = if (lvlMem != null) lvlMem else Data.STATS[0].lvl;
-		return lvlEntry(lvl).ferocity;
-	}
-
 	private function endurance():Float {
-		return if (enMem == null) enMem = estimateEn() else enMem;
+		return if (enMem == null) enMem = estimateEn(hpMem, acMem, dmgMem, hitMem, lvlMem) else enMem;
 	}
 
 	private function ferocity():Float {
-		return if (feMem == null) feMem = estimateFe() else feMem;
+		return if (feMem == null) feMem = estimateFe(hpMem, acMem, dmgMem, hitMem, lvlMem) else feMem;
 	}
 
 	public function level():Int {
@@ -125,17 +159,19 @@ class CalcResults {
 		return lvlEst;
 	}
 
-	public function hp():Float {
+	public function hp():Range {
 		if (hpMem != null) {
-			return hpMem;
+			return hpMem.toRange();
 		}
+
+		final lvl:Int = if (lvlMem != null) lvlMem else estimateLvlFromEn(endurance());
+		final endRange:Range = getEnduranceRange(hpMem, acMem, dmgMem, hitMem, lvl);
 
 		if (acMem != null) {
-			var lvl:Int = if (lvlMem != null) lvlMem else estimateLvlFromEn(endurance());
-			return endurance() * playerHitProb(lvl, acMem);
+			return endRange.times(playerHitProb(lvl, acMem));
 		}
 
-		return endurance() * Data.PLAYER_HITPROB;
+		return endRange.times(Data.PLAYER_HITPROB);
 	}
 
 	public function ac():Float {
@@ -151,17 +187,19 @@ class CalcResults {
 		return lvlEntry(lvl).ac;
 	}
 
-	public function dmg():Float {
+	public function dmg():Range {
 		if (dmgMem != null) {
-			return dmgMem;
+			return dmgMem.toRange();
 		}
+
+		final lvl:Int = if (lvlMem != null) lvlMem else estimateLvlFromFe(ferocity());
+		final ferRange:Range = getFerocityRange(hpMem, acMem, dmgMem, hitMem, lvl);
 
 		if (hitMem != null) {
-			var lvl:Int = if (lvlMem != null) lvlMem else estimateLvlFromFe(ferocity());
-			return ferocity() / creatureHitProb(lvl, hitMem);
+			return ferRange.div(creatureHitProb(lvl, hitMem));
 		}
 
-		return ferocity() / Data.CREATURE_HITPROB;
+		return return ferRange.div(Data.CREATURE_HITPROB);
 	}
 
 	public function hit():Float {

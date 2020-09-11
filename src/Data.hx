@@ -1,4 +1,4 @@
-import haxe.Json;
+using Lambda;
 
 class XpEntry {
 	public final lvl:Int;
@@ -47,4 +47,6 @@ class Data {
 		new XpEntry(26, 294.8844401, 20, 108.6043225, 11), new XpEntry(27, 329.6908268, 20, 121.4233238, 11),
 		new XpEntry(28, 368.6055501, 20, 135.7554031,
 			11), new XpEntry(29, 412.1135335, 20, 151.7791548, 11), new XpEntry(30, 460.7569377, 20, 169.6942539, 11)];
+	public static final MIN_LVL:Int = Data.STATS.slice(1).fold((entry : XpEntry, min : XpEntry) -> if (entry.lvl < min.lvl) entry else min, Data.STATS[0]).lvl;
+	public static final MAX_LVL:Int = Data.STATS.slice(1).fold((entry : XpEntry, max : XpEntry) -> if (entry.lvl > max.lvl) entry else max, Data.STATS[0]).lvl;
 }

@@ -11,9 +11,9 @@ class Main {
 		final hitInput:InputElement = cast Browser.document.getElementById("hit");
 
 		final level:IntAdapter = new IntAdapter(levelInput);
-		final hp:FloatAdapter = new FloatAdapter(hpInput);
+		final hp:RangeAdapter = new RangeAdapter(hpInput);
 		final ac:FloatAdapter = new FloatAdapter(acInput);
-		final dmg:FloatAdapter = new FloatAdapter(dmgInput);
+		final dmg:RangeAdapter = new RangeAdapter(dmgInput);
 		final hit:FloatAdapter = new FloatAdapter(hitInput);
 
 		final calc:CalcResults = new CalcResults(level.get(), hp.get(), ac.get(), dmg.get(), hit.get());
