@@ -9,7 +9,7 @@ class FloatExtensions {
 
 	public static function round(val:Float, precision:Int):Float {
 		val *= Math.pow(10.0, precision);
-		return Math.round(val) / Math.pow(10.0, precision);
+		return Math.fround(val) / Math.pow(10.0, precision);
 	}
 
 	public static function toString(val:Float, precision:Int):String {
