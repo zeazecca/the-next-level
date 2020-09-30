@@ -69,32 +69,38 @@ class CalcResults {
 
 	private static function getEnduranceRange(hp:Null<Float>, ac:Null<Float>, dmg:Null<Float>, hit:Null<Float>, lvl:Int):Range {
 		var endurance:Float = estimateEn(hp, ac, dmg, hit, lvl);
+		var dist:Float;
 		if (lvl == Data.MIN_LVL) {
 			final next:Float = estimateEn(hp, ac, dmg, hit, lvl, 1);
-			return new Range(0.0, (endurance + next) / 2.0);
+			dist = (next - endurance) / 2.0;
 		} else if (lvl == Data.MAX_LVL) {
 			final prev:Float = estimateEn(hp, ac, dmg, hit, lvl, -1);
-			return new Range(prev, endurance + (endurance -prev));
+			dist = (endurance - prev) / 2.0;
+		} else {
+			final prev:Float = estimateEn(hp, ac, dmg, hit, lvl, -1);
+			final next:Float = estimateEn(hp, ac, dmg, hit, lvl, 1);
+			dist = Math.min((endurance - prev) / 2.0, (next - endurance) / 2.0);
 		}
 
-		final prev:Float = estimateEn(hp, ac, dmg, hit, lvl, -1);
-		final next:Float = estimateEn(hp, ac, dmg, hit, lvl, 1);
-		return new Range((prev + endurance) / 2.0, (endurance + next) / 2.0);
+		return new Range(Math.max(1.0, endurance - dist), endurance + dist);
 	}
 
 	private static function getFerocityRange(hp:Null<Float>, ac:Null<Float>, dmg:Null<Float>, hit:Null<Float>, lvl:Int):Range {
 		var ferocity:Float = estimateFe(hp, ac, dmg, hit, lvl);
+		var dist:Float;
 		if (lvl == Data.MIN_LVL) {
 			final next:Float = estimateFe(hp, ac, dmg, hit, lvl, 1);
-			return new Range(0.0, (ferocity + next) / 2.0);
+			dist = next - ferocity;
 		} else if (lvl == Data.MAX_LVL) {
 			final prev:Float = estimateFe(hp, ac, dmg, hit, lvl, -1);
-			return new Range(prev, ferocity + (ferocity -prev));
+			dist = ferocity - prev;
+		} else {
+			final prev:Float = estimateFe(hp, ac, dmg, hit, lvl, -1);
+			final next:Float = estimateFe(hp, ac, dmg, hit, lvl, 1);
+			dist = Math.min((ferocity - prev) / 2.0, (next - ferocity) / 2.0);
 		}
 
-		final prev:Float = estimateFe(hp, ac, dmg, hit, lvl, -1);
-		final next:Float = estimateFe(hp, ac, dmg, hit, lvl, 1);
-		return new Range((prev + ferocity) / 2.0, (ferocity + next) / 2.0);
+		return new Range(Math.max(0.0, ferocity - dist), ferocity + dist);
 	}
 
 	private static function estimateEn(hp:Null<Float>, ac:Null<Float>, dmg:Null<Float>, hit:Null<Float>, lvl:Null<Int>, ?lvlAdjustment:Int = 0):Float {
@@ -120,7 +126,7 @@ class CalcResults {
 			lvl = (if (lvl != null) lvl else estimateLvlFromEn(endurance)) + lvlAdjustment;
 			return lvlEntry(lvl).product / endurance;
 		}
-		
+
 		lvl = (if (lvl != null) lvl else Data.STATS[0].lvl) + lvlAdjustment;
 		return lvlEntry(lvl).ferocity;
 	}
