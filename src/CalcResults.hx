@@ -18,6 +18,10 @@ class CalcResults {
 		return Math.abs(a - target) < Math.abs(b - target);
 	}
 
+	private static function isSmallerAndCloserTo(a:Float, b:Float, target:Float):Bool {
+		return a <= target && isCloserTo(a, b, target);
+	}
+
 	private static function estimateLvlFromHp(hp:Float):Int {
 		return Data.STATS.slice(1).fold((entry, best : XpEntry) -> if (isCloserTo(entry.hp, best.hp, hp)) entry else best, Data.STATS[0]).lvl;
 	}
@@ -50,9 +54,16 @@ class CalcResults {
 			.lvl;
 	}
 
-	private static function estimateLvlFromEnFe(endurance:Float, ferocity:Float):Int {
+	private static function estimateLvlFromEnFe(endurance:Float, ferocity:Float):Float {
 		final prod:Float = endurance * ferocity;
-		return Data.STATS.slice(1).fold((entry, best : XpEntry) -> if (isCloserTo(entry.product, best.product, prod)) entry else best, Data.STATS[0]).lvl;
+		final lvl: Int = Data.STATS.slice(1).fold((entry, best : XpEntry) -> if (isSmallerAndCloserTo(entry.product, best.product, prod)) entry else best, Data.STATS[0]).lvl;
+		var adj: Float = 0.0;
+		if (lvl != Data.MAX_LVL) {
+			final current: Float = lvlEntry(lvl).product;
+			final next: Float = lvlEntry(lvl + 1).product;
+			adj = (prod - current) / (next - current);
+		}
+		return (lvl + adj).clamp(Data.MIN_LVL, Data.MAX_LVL);
 	}
 
 	private static function acAdjustment(hp:Float, endurance:Float):Float {
@@ -155,12 +166,12 @@ class CalcResults {
 		return if (feMem == null) feMem = estimateFe(hpMem, acMem, dmgMem, hitMem, lvlMem) else feMem;
 	}
 
-	public function level():Int {
+	public function level():Float {
 		if (lvlMem != null) {
 			return lvlMem;
 		}
 
-		final lvlEst:Int = estimateLvlFromEnFe(endurance(), ferocity());
+		final lvlEst:Float = estimateLvlFromEnFe(endurance(), ferocity());
 		return lvlEst;
 	}
 

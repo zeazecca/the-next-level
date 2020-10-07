@@ -10,13 +10,13 @@ class Main {
 		final dmgInput:InputElement = cast Browser.document.getElementById("dmg");
 		final hitInput:InputElement = cast Browser.document.getElementById("hit");
 
-		final level:IntAdapter = new IntAdapter(levelInput);
+		final level:FloatAdapter = new FloatAdapter(levelInput);
 		final hp:RangeAdapter = new RangeAdapter(hpInput);
 		final ac:FloatAdapter = new FloatAdapter(acInput);
 		final dmg:RangeAdapter = new RangeAdapter(dmgInput);
 		final hit:FloatAdapter = new FloatAdapter(hitInput);
 
-		final calc:CalcResults = new CalcResults(level.get(), hp.get(), ac.get(), dmg.get(), hit.get());
+		final calc:CalcResults = new CalcResults(if (level.get() == null) null else Std.int(level.get()), hp.get(), ac.get(), dmg.get(), hit.get());
 		level.set(calc.level());
 		hp.set(calc.hp());
 		ac.set(calc.ac());
@@ -24,7 +24,9 @@ class Main {
 		hit.set(calc.hit());
 
 		levelInput.addEventListener("change", () -> {
-			final calc:CalcResults = new CalcResults(level.get(), hp.get(), ac.get(), dmg.get(), hit.get());
+			final lvl:Null<Float> = level.get();
+			final lvlInt:Null<Int> = if (lvl == null) null else Std.int(lvl);
+			final calc:CalcResults = new CalcResults(lvlInt, hp.get(), ac.get(), dmg.get(), hit.get());
 			level.set(calc.level());
 			hp.set(calc.hp());
 			ac.set(calc.ac());
@@ -33,7 +35,9 @@ class Main {
 		});
 
 		hpInput.addEventListener("change", () -> {
-			final calc:CalcResults = new CalcResults(level.get(), hp.get(), ac.get(), dmg.get(), hit.get());
+			final lvl:Null<Float> = level.get();
+			final lvlInt:Null<Int> = if (lvl == null) null else Std.int(lvl);
+			final calc:CalcResults = new CalcResults(lvlInt, hp.get(), ac.get(), dmg.get(), hit.get());
 			level.set(calc.level());
 			hp.set(calc.hp());
 			ac.set(calc.ac());
@@ -42,7 +46,9 @@ class Main {
 		});
 
 		acInput.addEventListener("change", () -> {
-			final calc:CalcResults = new CalcResults(level.get(), hp.get(), ac.get(), dmg.get(), hit.get());
+			final lvl:Null<Float> = level.get();
+			final lvlInt:Null<Int> = if (lvl == null) null else Std.int(lvl);
+			final calc:CalcResults = new CalcResults(lvlInt, hp.get(), ac.get(), dmg.get(), hit.get());
 			level.set(calc.level());
 			hp.set(calc.hp());
 			ac.set(calc.ac());
@@ -51,7 +57,9 @@ class Main {
 		});
 
 		dmgInput.addEventListener("change", () -> {
-			final calc:CalcResults = new CalcResults(level.get(), hp.get(), ac.get(), dmg.get(), hit.get());
+			final lvl:Null<Float> = level.get();
+			final lvlInt:Null<Int> = if (lvl == null) null else Std.int(lvl);
+			final calc:CalcResults = new CalcResults(lvlInt, hp.get(), ac.get(), dmg.get(), hit.get());
 			level.set(calc.level());
 			hp.set(calc.hp());
 			ac.set(calc.ac());
@@ -60,7 +68,9 @@ class Main {
 		});
 
 		hitInput.addEventListener("change", () -> {
-			final calc:CalcResults = new CalcResults(level.get(), hp.get(), ac.get(), dmg.get(), hit.get());
+			final lvl:Null<Float> = level.get();
+			final lvlInt:Null<Int> = if (lvl == null) null else Std.int(lvl);
+			final calc:CalcResults = new CalcResults(lvlInt, hp.get(), ac.get(), dmg.get(), hit.get());
 			level.set(calc.level());
 			hp.set(calc.hp());
 			ac.set(calc.ac());

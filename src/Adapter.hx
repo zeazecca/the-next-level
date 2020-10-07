@@ -47,7 +47,7 @@ class FloatAdapter  {
     }
 
 	public function set(val:Float):Void {
-        input.placeholder = val.toString(0);
+        input.placeholder = val.toString(1);
     }
 }
 
