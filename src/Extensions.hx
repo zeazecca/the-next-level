@@ -3,10 +3,6 @@ class FloatExtensions {
 		return Math.max(min, Math.min(max, val));
 	}
 
-	public static function toRange(val:Float):Range {
-		return new Range(val, val);
-	}
-
 	public static function round(val:Float, precision:Int):Float {
 		val *= Math.pow(10.0, precision);
 		return Math.fround(val) / Math.pow(10.0, precision);

@@ -50,28 +50,3 @@ class FloatAdapter  {
         input.placeholder = val.toString(1);
     }
 }
-
-class RangeAdapter {
-    private final input: InputElement;
-
-    public function new(input:InputElement) {
-        this.input = input;
-    }
-
-	public function get():Null<Float> {
-        if (input.value.length == 0) {
-            return null;
-        }
-
-        final value:Null<Float> = Std.parseFloat(input.value);
-        if (value != null) {
-            return value;
-        }
-
-        throw 'could not parse ${input} as float';
-    }
-
-	public function set(val:Range):Void {
-        input.placeholder = '${val.min.toString(1)}—${val.max.toString(1)}';
-    }
-}
