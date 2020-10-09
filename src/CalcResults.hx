@@ -74,51 +74,15 @@ class CalcResults {
 
 	private static function hitAdjustment(dmg:Float, ferocity:Float):Float {
 		final hitProb:Float = (ferocity / dmg).clamp(Data.MIN_HIT, Data.MAX_HIT);
-		final hitAdjustment:Float = hitProb - Data.CREATURE_HITPROB;
+		final hitAdjustment:Float = Data.CREATURE_HITPROB - hitProb;
 		return hitAdjustment / Data.PROB_INCREMENTS;
-	}
-
-	private static function getEnduranceRange(hp:Null<Float>, ac:Null<Float>, dmg:Null<Float>, hit:Null<Float>, lvl:Int):Range {
-		var endurance:Float = estimateEn(hp, ac, dmg, hit, lvl);
-		var dist:Float;
-		if (lvl == Data.MIN_LVL) {
-			final next:Float = estimateEn(hp, ac, dmg, hit, lvl, 1);
-			dist = (next - endurance) / 2.0;
-		} else if (lvl == Data.MAX_LVL) {
-			final prev:Float = estimateEn(hp, ac, dmg, hit, lvl, -1);
-			dist = (endurance - prev) / 2.0;
-		} else {
-			final prev:Float = estimateEn(hp, ac, dmg, hit, lvl, -1);
-			final next:Float = estimateEn(hp, ac, dmg, hit, lvl, 1);
-			dist = Math.min((endurance - prev) / 2.0, (next - endurance) / 2.0);
-		}
-
-		return new Range(Math.max(1.0, endurance - dist), endurance + dist);
-	}
-
-	private static function getFerocityRange(hp:Null<Float>, ac:Null<Float>, dmg:Null<Float>, hit:Null<Float>, lvl:Int):Range {
-		var ferocity:Float = estimateFe(hp, ac, dmg, hit, lvl);
-		var dist:Float;
-		if (lvl == Data.MIN_LVL) {
-			final next:Float = estimateFe(hp, ac, dmg, hit, lvl, 1);
-			dist = next - ferocity;
-		} else if (lvl == Data.MAX_LVL) {
-			final prev:Float = estimateFe(hp, ac, dmg, hit, lvl, -1);
-			dist = ferocity - prev;
-		} else {
-			final prev:Float = estimateFe(hp, ac, dmg, hit, lvl, -1);
-			final next:Float = estimateFe(hp, ac, dmg, hit, lvl, 1);
-			dist = Math.min((ferocity - prev) / 2.0, (next - ferocity) / 2.0);
-		}
-
-		return new Range(Math.max(0.0, ferocity - dist), ferocity + dist);
 	}
 
 	private static function estimateEn(hp:Null<Float>, ac:Null<Float>, dmg:Null<Float>, hit:Null<Float>, lvl:Null<Int>, ?lvlAdjustment:Int = 0):Float {
 		if (hp != null && ac != null) {
 			lvl = (if (lvl != null) lvl else estimateLvlFromHp(hp));
 			return hp / playerHitProb(lvl, ac);
-		} else if (hp == null && dmg != null) {
+		} else if (dmg != null && hit != null) {
 			final ferocity:Float = estimateFe(hp, ac, dmg, hit, lvl, lvlAdjustment);
 			lvl = (if (lvl != null) lvl else estimateLvlFromFe(ferocity)) + lvlAdjustment;
 			return lvlEntry(lvl).product / ferocity;
@@ -132,7 +96,7 @@ class CalcResults {
 		if (dmg != null && hit != null) {
 			lvl = if (lvl != null) lvl else estimateLvlFromDmg(dmg);
 			return dmg * creatureHitProb(lvl, hit);
-		} else if (dmg == null && hp != null) {
+		} else if (hp != null && ac != null) {
 			final endurance:Float = estimateEn(hp, ac, dmg, hit, lvl, lvlAdjustment);
 			lvl = (if (lvl != null) lvl else estimateLvlFromEn(endurance)) + lvlAdjustment;
 			return lvlEntry(lvl).product / endurance;
@@ -175,19 +139,16 @@ class CalcResults {
 		return lvlEst;
 	}
 
-	public function hp():Range {
+	public function hp():Float {
 		if (hpMem != null) {
-			return hpMem.toRange();
+			return hpMem;
 		}
-
-		final lvl:Int = if (lvlMem != null) lvlMem else estimateLvlFromEn(endurance());
-		final endRange:Range = getEnduranceRange(hpMem, acMem, dmgMem, hitMem, lvl);
 
 		if (acMem != null) {
-			return endRange.times(playerHitProb(lvl, acMem));
+			return endurance() * playerHitProb(level().iround(), ac());
 		}
 
-		return endRange.times(Data.PLAYER_HITPROB);
+		return endurance() * Data.PLAYER_HITPROB;
 	}
 
 	public function ac():Float {
@@ -195,27 +156,23 @@ class CalcResults {
 			return acMem;
 		}
 
-		var lvl:Int = if (lvlMem != null) lvlMem else estimateLvlFromEn(endurance());
 		if (hpMem != null) {
-			return lvlEntry(lvl).ac - acAdjustment(hpMem, endurance());
+			return lvlEntry(level().iround()).ac - acAdjustment(hp(), endurance());
 		}
 
-		return lvlEntry(lvl).ac;
+		return lvlEntry(level().iround()).ac;
 	}
 
-	public function dmg():Range {
+	public function dmg():Float {
 		if (dmgMem != null) {
-			return dmgMem.toRange();
+			return dmgMem;
 		}
-
-		final lvl:Int = if (lvlMem != null) lvlMem else estimateLvlFromFe(ferocity());
-		final ferRange:Range = getFerocityRange(hpMem, acMem, dmgMem, hitMem, lvl);
 
 		if (hitMem != null) {
-			return ferRange.div(creatureHitProb(lvl, hitMem));
+			return ferocity() / creatureHitProb(level().iround(), hitMem);
 		}
 
-		return return ferRange.div(Data.CREATURE_HITPROB);
+		return ferocity() / Data.CREATURE_HITPROB;
 	}
 
 	public function hit():Float {
@@ -223,11 +180,10 @@ class CalcResults {
 			return hitMem;
 		}
 
-		var lvl:Int = if (lvlMem != null) lvlMem else estimateLvlFromFe(ferocity());
 		if (dmgMem != null) {
-			return lvlEntry(lvl).hit + hitAdjustment(dmgMem, ferocity());
+			return lvlEntry(level().iround()).hit - hitAdjustment(dmg(), ferocity());
 		}
 
-		return lvlEntry(lvl).hit;
+		return lvlEntry(level().iround()).hit;
 	}
 }

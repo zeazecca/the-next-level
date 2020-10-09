@@ -12,6 +12,10 @@ class FloatExtensions {
 		return Math.fround(val) / Math.pow(10.0, precision);
 	}
 
+	public static function iround(val:Float):Int {
+		return Std.int(Math.round(val));
+	}
+
 	public static function toString(val:Float, precision:Int):String {
 		return Std.string(round(val, precision));
 	}

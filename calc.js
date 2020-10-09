@@ -155,31 +155,7 @@ CalcResults.acAdjustment = function(hp,endurance) {
 	return (FloatExtensions.clamp(hp / endurance,0.05,0.95) - 0.6) / 0.05;
 };
 CalcResults.hitAdjustment = function(dmg,ferocity) {
-	return (FloatExtensions.clamp(ferocity / dmg,0.05,0.95) - 0.6) / 0.05;
-};
-CalcResults.getEnduranceRange = function(hp,ac,dmg,hit,lvl) {
-	var endurance = CalcResults.estimateEn(hp,ac,dmg,hit,lvl);
-	var dist;
-	if(lvl == Data.MIN_LVL) {
-		dist = (CalcResults.estimateEn(hp,ac,dmg,hit,lvl,1) - endurance) / 2.0;
-	} else if(lvl == Data.MAX_LVL) {
-		dist = (endurance - CalcResults.estimateEn(hp,ac,dmg,hit,lvl,-1)) / 2.0;
-	} else {
-		dist = Math.min((endurance - CalcResults.estimateEn(hp,ac,dmg,hit,lvl,-1)) / 2.0,(CalcResults.estimateEn(hp,ac,dmg,hit,lvl,1) - endurance) / 2.0);
-	}
-	return new Range(Math.max(1.0,endurance - dist),endurance + dist);
-};
-CalcResults.getFerocityRange = function(hp,ac,dmg,hit,lvl) {
-	var ferocity = CalcResults.estimateFe(hp,ac,dmg,hit,lvl);
-	var dist;
-	if(lvl == Data.MIN_LVL) {
-		dist = CalcResults.estimateFe(hp,ac,dmg,hit,lvl,1) - ferocity;
-	} else if(lvl == Data.MAX_LVL) {
-		dist = ferocity - CalcResults.estimateFe(hp,ac,dmg,hit,lvl,-1);
-	} else {
-		dist = Math.min((ferocity - CalcResults.estimateFe(hp,ac,dmg,hit,lvl,-1)) / 2.0,(CalcResults.estimateFe(hp,ac,dmg,hit,lvl,1) - ferocity) / 2.0);
-	}
-	return new Range(Math.max(0.0,ferocity - dist),ferocity + dist);
+	return (0.6 - FloatExtensions.clamp(ferocity / dmg,0.05,0.95)) / 0.05;
 };
 CalcResults.estimateEn = function(hp,ac,dmg,hit,lvl,lvlAdjustment) {
 	if(lvlAdjustment == null) {
@@ -188,7 +164,7 @@ CalcResults.estimateEn = function(hp,ac,dmg,hit,lvl,lvlAdjustment) {
 	if(hp != null && ac != null) {
 		lvl = lvl != null ? lvl : CalcResults.estimateLvlFromHp(hp);
 		return hp / CalcResults.playerHitProb(lvl,ac);
-	} else if(hp == null && dmg != null) {
+	} else if(dmg != null && hit != null) {
 		var ferocity = CalcResults.estimateFe(hp,ac,dmg,hit,lvl,lvlAdjustment);
 		lvl = (lvl != null ? lvl : CalcResults.estimateLvlFromFe(ferocity)) + lvlAdjustment;
 		return CalcResults.lvlEntry(lvl).product / ferocity;
@@ -203,7 +179,7 @@ CalcResults.estimateFe = function(hp,ac,dmg,hit,lvl,lvlAdjustment) {
 	if(dmg != null && hit != null) {
 		lvl = lvl != null ? lvl : CalcResults.estimateLvlFromDmg(dmg);
 		return dmg * CalcResults.creatureHitProb(lvl,hit);
-	} else if(dmg == null && hp != null) {
+	} else if(hp != null && ac != null) {
 		var endurance = CalcResults.estimateEn(hp,ac,dmg,hit,lvl,lvlAdjustment);
 		lvl = (lvl != null ? lvl : CalcResults.estimateLvlFromEn(endurance)) + lvlAdjustment;
 		return CalcResults.lvlEntry(lvl).product / endurance;
@@ -234,45 +210,39 @@ CalcResults.prototype = {
 	}
 	,hp: function() {
 		if(this.hpMem != null) {
-			return FloatExtensions.toRange(this.hpMem);
+			return this.hpMem;
 		}
-		var lvl = this.lvlMem != null ? this.lvlMem : CalcResults.estimateLvlFromEn(this.endurance());
-		var endRange = CalcResults.getEnduranceRange(this.hpMem,this.acMem,this.dmgMem,this.hitMem,lvl);
 		if(this.acMem != null) {
-			return endRange.times(CalcResults.playerHitProb(lvl,this.acMem));
+			return this.endurance() * CalcResults.playerHitProb(FloatExtensions.iround(this.level()),this.ac());
 		}
-		return endRange.times(0.6);
+		return this.endurance() * 0.6;
 	}
 	,ac: function() {
 		if(this.acMem != null) {
 			return this.acMem;
 		}
-		var lvl = this.lvlMem != null ? this.lvlMem : CalcResults.estimateLvlFromEn(this.endurance());
 		if(this.hpMem != null) {
-			return CalcResults.lvlEntry(lvl).ac - CalcResults.acAdjustment(this.hpMem,this.endurance());
+			return CalcResults.lvlEntry(FloatExtensions.iround(this.level())).ac - CalcResults.acAdjustment(this.hp(),this.endurance());
 		}
-		return CalcResults.lvlEntry(lvl).ac;
+		return CalcResults.lvlEntry(FloatExtensions.iround(this.level())).ac;
 	}
 	,dmg: function() {
 		if(this.dmgMem != null) {
-			return FloatExtensions.toRange(this.dmgMem);
+			return this.dmgMem;
 		}
-		var lvl = this.lvlMem != null ? this.lvlMem : CalcResults.estimateLvlFromFe(this.ferocity());
-		var ferRange = CalcResults.getFerocityRange(this.hpMem,this.acMem,this.dmgMem,this.hitMem,lvl);
 		if(this.hitMem != null) {
-			return ferRange.div(CalcResults.creatureHitProb(lvl,this.hitMem));
+			return this.ferocity() / CalcResults.creatureHitProb(FloatExtensions.iround(this.level()),this.hitMem);
 		}
-		return ferRange.div(0.6);
+		return this.ferocity() / 0.6;
 	}
 	,hit: function() {
 		if(this.hitMem != null) {
 			return this.hitMem;
 		}
-		var lvl = this.lvlMem != null ? this.lvlMem : CalcResults.estimateLvlFromFe(this.ferocity());
 		if(this.dmgMem != null) {
-			return CalcResults.lvlEntry(lvl).hit + CalcResults.hitAdjustment(this.dmgMem,this.ferocity());
+			return CalcResults.lvlEntry(FloatExtensions.iround(this.level())).hit - CalcResults.hitAdjustment(this.dmg(),this.ferocity());
 		}
-		return CalcResults.lvlEntry(lvl).hit;
+		return CalcResults.lvlEntry(FloatExtensions.iround(this.level())).hit;
 	}
 };
 var XpEntry = function(lvl,hp,ac,dmg,hit) {
@@ -317,6 +287,9 @@ FloatExtensions.round = function(val,precision) {
 	val *= Math.pow(10.0,precision);
 	return Math.round(val) / Math.pow(10.0,precision);
 };
+FloatExtensions.iround = function(val) {
+	return Math.round(val) | 0;
+};
 FloatExtensions.toString = function(val,precision) {
 	return Std.string(FloatExtensions.round(val,precision));
 };
@@ -338,9 +311,9 @@ Main.main = function() {
 	var dmgInput = window.document.getElementById("dmg");
 	var hitInput = window.document.getElementById("hit");
 	var level = new FloatAdapter(levelInput);
-	var hp = new RangeAdapter(hpInput);
+	var hp = new FloatAdapter(hpInput);
 	var ac = new FloatAdapter(acInput);
-	var dmg = new RangeAdapter(dmgInput);
+	var dmg = new FloatAdapter(dmgInput);
 	var hit = new FloatAdapter(hitInput);
 	var calc = new CalcResults(level.get() == null ? null : level.get() | 0,hp.get(),ac.get(),dmg.get(),hit.get());
 	var tmp = calc.level();
