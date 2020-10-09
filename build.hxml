@@ -1,4 +1,5 @@
 -cp src
+-dce full
 -D analyzer-optimize
 -main Main
 --js calc.js
