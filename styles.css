@@ -1,6 +1,6 @@
 html { font-size: 1.93vw; }
-@media all and (min-width: 1000px) { html { font-size: 1.2em; } }
-@media all and (max-width: 520px) { html{ font-size: 24px; } }
+@media all and (min-width: 1000px) { html { font-size: 18px; } }
+@media all and (max-width: 767px) { html{ font-size: 24px; } }
 
 body {
     margin: 4rem 0 12rem 0;
@@ -154,6 +154,7 @@ quote {
 }
 
 .calculator input {
+    
     border: none;
     outline: none;
     appearance: textfield;
