@@ -1,8 +1,6 @@
-html {
-    font-size: 1.2em;
-}
-
-@media only screen and (min-width: 600px) { html { font-size: 1.5em; }}
+html { font-size: 1.93vw; }
+@media all and (min-width: 1000px) { html { font-size: 1.2em; } }
+@media all and (max-width: 520px) { html{ font-size: 1.6em; } }
 
 body {
     margin: 4rem 0 12rem 0;
