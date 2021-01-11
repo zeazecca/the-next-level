@@ -3,262 +3,189 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Take your XP to The Next Level</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,700;1,400&family=Grenze+Gotisch:wght@700&display=swap" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet" />
+    <title>The Next Level</title>
 </head>
 
 <body>
-    <div>
-        <ul>
-            <li>
-                <label for="level">Level:</label>
-                <input type="text" id="level" name="level" />
-            </li>
-            <li>
-                <label for="hp">Hit Points:</label>
-                <input type="text" id="hp" name="hp" />
-            </li>
-            <li>
-                <label for="ac">Armor Class:</label>
-                <input type="text" id="ac" name="ac" />
-            </li>
-            <li>
-                <label for="dmg">Damage:</label>
-                <input type="text" id="dmg" name="dmg" />
-            </li>
-            <li>
-                <label for="hit">Hit:</label>
-                <input type="text" id="hit" name="hit" />
-            </li>
-        </ul>
+    <div class="header">
+        In the charnel pits of a hidden tomb, you uncover a tome of secret lore, tarnished black-silver glyphs spelling
+
+        <booktitle>The Next<large>Level</large></booktitle>
     </div>
+    <div class="calculator">
+        <div class="score">
+            <label for="level">Creature Level</label>
+            <input type="number" id="level" name="level" min="-3" max="30" step="1" />
+            <div class="tooltip">
+                ?
+                <span class="tooltiptext">
+                    A creature&rsquo;s level says something about its strength. A good rule of thumb is that one player character should fight one creature of their own level for a medium-level encounter. Check the section on encounter building for more info.
+                </span>
+            </div>
+        </div>
+        <div class="score">
+            <label for="hp">Hit Points</label>
+            <input type="number" id="hp" name="hp" min="0" step="any" />
+            <div class="tooltip">
+                ?
+                <span class="tooltiptext">
+                    Hit points say something about a creature&rsquo;s effective durability. Make sure to account for special traits that increase a creature&rsquo;s durability:
 
-    <h1 id="-the-next-level-">&quot;The Next Level&quot;</h1>
-    <p>In the dusty pits of a long-forgotten dungeon, you unearth a tome of hidden lore, with tarnished black-silver glyphs spelling:</p>
-    <p><code>&quot;The Next Level: Or, Creatures and the Challenge of Personne with Abilite-Wealth&quot;</code></p>
-    <p>What do you want to do?</p>
-    <ul>
-        <li>What am I looking at?</li>
-        <li>Using the calculator</li>
-        <li>Building a creature</li>
-        <li>Building encounters and awarding XP</li>
-        <li>From the Monster Manual: Hell Hounds</li>
-        <li>Creating a boss encounter: Cattle-Plague
-            <!-- * Let's make an encounter: Red Hand of Doom Raiding Group -->
-        </li>
-    </ul>
-    <h1 id="what-am-i-looking-at-">What am I looking at?</h1>
-    <p>You&#39;re looking at a system I made because I was unsatisfied with the Challenge Rating system present in the Dungeons &amp; Dragons 5th-edition rules. Lots of stuff I could mention---but I won&#39;t. It would turn into a hurricane of nitpicking.
-        Instead, I&#39;ll tell you why you should consider using The Next Level, the system I came up with. Here&#39;s the pitch:</p>
-    <ul>
-        <li><strong>Creature Level = Player Level:</strong> A 3rd-level creature is a reasonable encounter for a single level 3 player. Four players? Four creatures.</li>
-        <li><strong>A 3-Encounter Adventuring Day:</strong> Down from 6, a better fit for most playstyles, but with enough leeway that combatants won&#39;t go full nova on each other all the time.</li>
-        <li><strong>3-Turn Encounters:</strong> Long enough for tactical and exciting encounters, short enough to prevent the dreaded Combat Slog.</li>
-        <li><strong>Consistent Rewards:</strong> The threshold to the next level is always 1000 XP. It&#39;s easy to hand out roleplaying/exploration/quest XP like this, since there&#39;s no weird XP thresholds you have to think about. It doesn&#39;t matter
-            whether you&#39;re playing with players of level 3 or level 13---the numbers are the same.</li>
-    </ul>
-    <h1 id="using-the-calculator">Using the calculator</h1>
-    <p>On the surface this system is mostly similar to the one in the DM&#39;s Guide: you&#39;ll calculate a creature&#39;s offensive and defensive abilities, and calculate their Level from that. I plugged the numbers into the interactive calculator to the
-        left so you can focus on what matters: the stats, and by extension, the fun at the table. Plug some numbers in the calculator, leave the boxes whose values you want to know empty, and they will be filled in automagically. Play around with it and
-        it should become clear. Hover your mouse over a box for a short description on its contents.</p>
-    <h2 id="level">Level</h2>
-    <p>Just that: a creature&#39;s level says something about how strong it is. Check out the Building Encounters section for more information, but a good rule of thumb is that one player should fight one creature of their own level for a medium-difficulty
-        encounter.
-    </p>
-    <h2 id="hit-points">Hit Points</h2>
-    <p>Hit Points say something about a creature&#39;s durability. Make sure to account for any special traits a creature may have when drafting a creature&#39;s stat block:</p>
-    <ul>
-        <li>A <strong>wraith</strong> resists most damage, so it&#39;s effective hit points are doubled.</li>
-        <li>Trolls have regeneration---so add extra hit points for every round of the fight. (3 rounds, usually)</li>
-        <li>Zombies have a trait that may let them get back up after a lethal blow. In cases like this, I assume it&#39;ll give them one extra round, and I multiply their hit points by that amount (4/3) before punching it in.</li>
-    </ul>
-    <h2 id="armor-class">Armor Class</h2>
-    <p>Depending on a creature&#39;s final level, an AC of 18 might be anywhere from high to just middling. I, myself convert saving throws to &#39;Ability Score ACs&#39; for faster play (attack with Attack Bonus, defend with 14 + Bonus to Saving Throws).
-        I&#39;ve found that putting 75% AC and 25% the average of a creature&#39;s Dexterity, Constitution, and Wisdom Ability Score AC works pretty well.</p>
-    <ul>
-        <li>If a creature can force disadvantage on attack rolls/advantage on saving throws (e.g. invisibility), I account for that here (+2 to +3 bonus to the relevant stat).</li>
-        <li>Creatures that can attack without being open to counterattacks (ranged attacks and flight; <em>counterspell</em>) should probably also get a +2 bonus or so.</li>
-    </ul>
-    <h2 id="damage">Damage</h2>
-    <p>Damage, without hit ratio factored in. If a creature has multiple actions it is likely to use (like a breath weapon), take the average of the damage it deals over 3 rounds of combat.</p>
-    <ul>
-        <li>Gnolls get a free <strong>Bite</strong> attack when they kill something; I assume an ability like this is used at least once per encounter, so I add 1/3 of their <strong>Bite</strong> to the gnoll&#39;s total damage output.</li>
-        <li>Orcs don&#39;t have much in the way of damage, but their <strong>Aggressive</strong> trait makes it easy to close in on their targets, and hard for their targets to get away. I&#39;d count that as a single extra round: multiply their damage by
-            4/3.
-        </li>
-        <li>Some spells and abilities hit multiple creatures. The DMG suggests to assume such an ability hits two creatures, and to assume saving throws are automatically failed. I assume the same.</li>
-    </ul>
-    <h2 id="attack-bonus">Attack Bonus</h2>
-    <p>Or Saving Throw DC, whichever you prefer (just subtract 8 for the corresponding Attack Bonus).</p>
-    <ul>
-        <li>Kobolds, Wolves, Sahuagin, and several other creatures get easy advantage on their attacks. So do invisible creatures. I usually count that as a +2--+3 bonus and leave it at that.</li>
-        <li>Some spells and skills, like <em>bless</em>, increase a creature&#39;s to hit bonus.</li>
-    </ul>
-    <h1 id="building-a-creature">Building a creature</h1>
-    <p>Enter numbers you already have in the tool to the left. A level too if you&#39;ve got one in mind---otherwise the tool will compute it from other values you put in. Once you&#39;ve got all five, turn them into a creature, tweaking their statistics
-        to account for special abilities they have.</p>
-    <h2 id="creating-a-boss-creature">Creating a boss creature</h2>
-    <p>Boss creatures are often supposed to be tough and dangerous, but in 5th-edition D&amp;D that often translates to glass cannons and swingy encounters. I like to replace the Legendary Action system in the Monster Manual with multiple initiative counts
-        in a single round---effectively splitting a boss&#39;s <strong>multiattack</strong> and movement over 2 or more turns. Doing it this way means their damage is spread over the whole round, so players can adapt. It also means your boss is vulnerable
-        to <em>hold person</em> and other cool spells your players have, but they break out quicker than most normal creatures do.</p>
-    <h2 id="statting-up-world-destroying-creatures">Statting up world-destroying creatures</h2>
-    <p>Play around with the calculator and you&#39;ll figure out that its levels range from -3 to 30: more than enough for most uses. Some <em>really</em> overpowered creatures, like the Monster Manual&#39;s Tarrasque, don&#39;t really fit the idea of this
-        system though. At that scale of play the numbers kind of break down regardless of what you do. If you are in need of a world-destroying titan though, it&#39;s doable: just run it as if it were multiple creatures at once, and tweak HP/damage/XP
-        accordingly.
-    </p>
-    <h1 id="building-encounters-and-awarding-xp">Building encounters and awarding XP</h1>
-    <p>I suggest using the table below when you&#39;re building an encounter. It&#39;s similar to Pathfinder 2e&#39;s system and the Unearthed Arcana article on 3-Pillar XP: the stronger your players get, the less XP is awarded for an encounter with the
-        same creature. For party level, I suggest taking the average level. I award XP to players individually, though you could also award lower-levelled players double the XP if you want them to level up more quickly.</p>
-    <p>As for building encounters, that system is still in the playtesting phase; but the gist of it is already here. One player should be able to take on one creature of their own level as a medium-difficulty encounter. That&#39;s 80 XP; multiply that by
-        the number of players in your party and you have an XP budget. Three encounters per day gives you 240 XP per player per day, if you care about that; I tend to leave it my players which encounters they&#39;ll fight and which ones they&#39;ll flee.
-    </p>
-    <p>I also award XP for roleplaying, exploration, and general fun. I separate those into minor, moderate, and major categories. I award 20 XP for funny quips, and great descriptions. 80 XP I award for great roleplaying, usually in addition to Inspiration
-        tokens. I tend to reserve 120 XP for when party completes a story arc, and for exceptional roleplaying.</p>
-    <h3 id="creature-xp-by-level">Creature XP by Level</h3>
-    <table>
-        <thead>
-            <tr>
-                <th style="text-align:center">Creature level</th>
-                <th style="text-align:center">XP</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="text-align:center">Party Level + 10</td>
-                <td style="text-align:center">1000</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level + 9</td>
-                <td style="text-align:center">800</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level + 8</td>
-                <td style="text-align:center">600</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level + 7</td>
-                <td style="text-align:center">480</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level + 6</td>
-                <td style="text-align:center">360</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level + 5</td>
-                <td style="text-align:center">280</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level + 4</td>
-                <td style="text-align:center">200</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level + 3</td>
-                <td style="text-align:center">160</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level + 2</td>
-                <td style="text-align:center">120</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level + 1</td>
-                <td style="text-align:center">100</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level + 0</td>
-                <td style="text-align:center">80</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level - 1</td>
-                <td style="text-align:center">60</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level - 2</td>
-                <td style="text-align:center">60</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level - 3</td>
-                <td style="text-align:center">40</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level - 4</td>
-                <td style="text-align:center">40</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level - 5</td>
-                <td style="text-align:center">20</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">Party Level - 6</td>
-                <td style="text-align:center">20</td>
-            </tr>
-        </tbody>
-    </table>
-    <h3 id="non-combat-xp-rewards">Non-combat XP Rewards</h3>
-    <table>
-        <thead>
-            <tr>
-                <th style="text-align:left">Event</th>
-                <th style="text-align:center">XP</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="text-align:left">Minor</td>
-                <td style="text-align:center">20</td>
-            </tr>
-            <tr>
-                <td style="text-align:left">Moderate</td>
-                <td style="text-align:center">80</td>
-            </tr>
-            <tr>
-                <td style="text-align:left">Major</td>
-                <td style="text-align:center">120</td>
-            </tr>
-        </tbody>
-    </table>
-    <h1 id="from-the-monster-manual-hell-hounds">From the Monster Manual: Hell Hounds</h1>
-    <p>Let&#39;s use the <a href="https://5thsrd.org/gamemaster_rules/monsters/hell_hound/">Hell Hound</a> in the SRD as guinea pig. A quick overview of their stat block tells me that these dogs aren&#39;t too tactically sophisticated: their Intelligence
-        is 6. With a high Wisdom and proficiency in Perception, I&#39;d probably use Hell Hounds as hunting dogs for fiends, or other evil-aligned creatures who could find (and tame!) one.</p>
-    <p>Hell Hounds have a damage immunity: fire. Apart from <em>fireball</em> and lower-levelled fire-elemental spells, I think it&#39;s unlikely for players to base their damage output entirely on <em>fire</em> in particular, so I wouldn&#39;t add this
-        to their Hit Point count. That leaves them with <strong>45.5.</strong> hit points if you count up the average value for their Hit Dice as listed.</p>
-    <p>Their AC is a bit more involved. A Hell Hound&#39;s actual Armor Class is 15; I factor in their major saving throw bonuses, which are +1, +2, and +1 for their Dexterity, Constitution, and Wisdom, respectively. It&#39;s easy to turn these into AC-like
-        values: just add 14 to each of them (hover your mouse over the AC box for a full explanation). Putting all of that together, we end up with the following value in the AC box:</p>
-    <p>15 <em> 0.75 + (15 + 16 + 15) / 3 </em> 0.25 = 15 <em> 0.75 + (15 + 16 + 15) / 12 = <em>*15.1</em></em>
-    </p>
-    <p>Next, let&#39;s calculate their damage output. A Hell Hound&#39;s <strong>bite</strong> attack deals 7.5 + 7 = 14.5 damage on average. Their <strong>fire breath</strong> is a bit more involved---as is usual for attacks that hit a sizable area, we&#39;ll
-        assume two targets are damaged. Each target takes 21 damage, so 21 + 21, which is 42 damage in all. That action has a 1 in 3 chance of recharching, though, so we&#39;ll assume it is only used once. Averaging those numbers, we end up with (14.5
-        + 14.5 + 42) / 3 = <strong>23.7</strong> damage per turn.</p>
-    <p>Calculating their Attack Bonus should be easier. Hell Hounds have the <strong>pack tactics</strong> trait. According to the DMG, <strong>pack tactics</strong> is equivalent to a +1 bonus to attack rolls, so we end up with a <strong>+6</strong> bonus
-        to Attack Rolls. You can just fill that in, but we can also factor in the hit ratio of their <strong>fire breath</strong> action, if we really want to. It has a DC 12 saving throw, which is based on the Hell Hound&#39;s Constitution (8 + their
-        Constitution modifier + proficiency). Subtracting that static 8 leaves us with a <strong>+4</strong> bonus to hit. We already figured out that the <strong>fire breath</strong> action was likely going to be used one in three times, so we&#39;ll
-        average it the same way: (5 + 5 + 4) / 3 = a <strong>+4.7</strong> bonus to attack rolls on average.</p>
-    <p>Plug in all those numbers, and the calculator will spit out the right level: <strong>5.8</strong>, which rounds up to a level <strong>6</strong> creature.</p>
-    <h1 id="creating-a-boss-encounter-cattle-plague">Creating a boss encounter: Cattle-Plague</h1>
-    <p><code>It is early summer in Hylloch, a small town on the edge of the Greenlake. The harvest is shaping up to be a good one, and Lord Forsythe has called for woodcutters to cut down accessible parts of the neighboring Bolderwood. The extra space is used for a corral to keep cattle from various farmers who live around town. It is surrounded by a sturdy fence, and the gate is locked each evening by a man from Forsythe manor, Fredrick. When one day, Shock! A cow&#39;s hind is found, cut clean in two, the front half nowhere to be found. Who did this?</code></p>
-    <p>This could be a fun intro-level quest to defeat an <strong>ankheg</strong> or a similar, beetle-like insectoid monster, raised by a crazy hermit who lives in the woods. The one in the Monster Manual is pretty boring, though, so let&#39;s spice it
-        up a little. Assuming a 1st-level party of four players, we&#39;d need a creature of level 6 for a Medium encounter (280 XP). There is a significant bump in ability at levels 5, 11, and 17 for players and creatures though, so let&#39;s go with
-        a conservative estimate of 5 (200 XP).</p>
-    <p>I usually like my bosses to be dynamic encounters, so our boss should have multiple actions that shake up everyone&#39;s expectations. As a start, let&#39;s give it a bite attack that also inflicts a grapple; if we throw in the ankheg&#39;s digestive
-        acid, that should provide incentive to get out, <em>fast.</em> Let&#39;s also keep the acid breath weapon, but it shouldn&#39;t deal much damage; our party is only 1st-level, after all. Instead, let&#39;s change it to corrode the target&#39;s
-        armor. That might seem harsh---but since this is the boss of the adventure, the characters will get a big quest reward afterwards as compensation. Finally, we&#39;ll give it two dynamic reactions: once it is struck for a sufficient amount of damage
-        in a single blow, its carapace breaks, spilling pools of acid everywhere. And once its hit points start to dwindle, it will burrow underground, dragging grappled characters with it during its flight.</p>
-    <p>Let&#39;s start by entering what we already know: a level (<strong>5</strong>). That gives us some numbers to work with. A giant insect is probably not very dextrous. It will probably have a decent Constitution score, and a lower-than-average Wisdom.
-        Let&#39;s arbitrarily choose a -1, +2, and -1 modifier, respectively, giving it an average saving throw &#39;AC&#39; of <strong>13.7</strong>. We&#39;d need an AC of <strong>16.8</strong> to compensate. Let&#39;s do that, and keep the beast&#39;s
-        underbelly largely unprotected if players manage to flip it over. All that together comes to an effective AC of 16: exactly what the calculator recommended. Let&#39;s fix the beast&#39;s hit points slightly below the recommended value at 52, which
-        comes out to exactly 7 hit dice. (The rules recommend a d10 hit die for large creatures.)</p>
-    <p>Then we&#39;ll just need to figure out how it attacks. An effective attack bonus of 7 is high for a 1st-level party, though; let&#39;s drop that to 6. That also gives us a little bit more damage to spread around the various attacks we&#39;ve got planned.
-        First, let&#39;s get the basic attack action and the acid breath out of the way:</p>
-    <p><strong>Bite.</strong> <em>Melee Weapon Attack:</em> +5 to hit, reach 5 ft., 1 target. <em>Hit:</em> 5 (2d4+2) piercing damage, and the target is grappled (escape DC 12).</p>
-    <p><strong>Acid Spray (Recharge 5-6).</strong> One target Cattle-Plague can see within 30 feet must make a DC 12 Dexterity saving throw. On a failure, it takes 2d6 acid damage. If the target is wearing armor, it corrodes and their armor class is permanently
-        reduced by 1. If this reduces the armor&#39;s AC to 10, it is destroyed. On a successful saving throw, the target only takes half damage, and their armor is not corroded.</p>
-    <p>Reducing a target&#39;s armor indirectly raises the probability of our attacks hitting; so indirectly, our attack bonus is still somewhere around 6. Let&#39;s also add in a trait to codify the beast&#39;s digestive juices:</p>
-    <p><strong>Acid Saliva.</strong> A target grappled by Cattle-Plague takes 1d4 acid damage at the start of each of their turns.</p>
-    <p>That puts our damage output at (2 * (2d4+2 + 1d4) + 2d6) / 3 = 8.7 damage per turn. So we have 11.4 - 8.7 = 2.7 damage left over for the acid pools. So let&#39;s throw in another trait:</p>
-    <p><strong>Splintering Carapace.</strong> Once Cattle-Plague takes a total of 20 damage, its carapace splinters, spilling acid in a 5-feet circle centered on itself. The acid deals 1d4 acid damage whenever a creature enters the area for the first time
-        on its turn or starts its turn there. The acid disappears after 1 minute.</p>
-    <p>Finally, let&#39;s give it a flight reaction:</p>
-    <p><strong>Flight.</strong> Once Cattle-Plague drops to 17 hit points or below, it can immediately burrow up to its speed, dragging creatures it is grappling with it.</p>
-    <p>And we&#39;re done!</p>
-    <script src="/the-next-level/calc.js"></script>
-</body>
+                    <ul>
+                        <li>A <strong>wraith</strong> resists most damage, so it can take double the punishment of a creature without resistances.</li>
+                        <li><strong>Trolls</strong> have regeneration&mdash;add 3&times; the amount they regenerate every turn. (A fight usually lasts 3 rounds.)</li>
+                        <li>A <strong>zombie</strong> may survive a lethal blow. Multiply their hit points by 4/3. (A zombie&rsquo;s durability lets them survive one extra round.)</li>
+                    </ul>
+                    </span>
+            </div>
+        </div>
+        <div class="score">
+            <label for="ac">Armor Class</label>
+            <input type="number" id="ac" name="ac" step="any" />
+            <div class="tooltip">
+                ?
+                <span class="tooltiptext">
+                    AC, and also saving throws. Add a +1 for every major saving throw (Dexterity, Constitution, Charisma). For a more sophisticated method, see the hell hound and Cattle-Plague examples below.
+                    
+                    <ul>
+                        <li>An <strong>invisible stalker</strong> is, well, invisible; add +3 to its AC to compensate for the disadvantage on attack rolls against it.</li>
+                        <li>A <strong>manticore</strong> can use ranged attacks during its flight; it gets a +2 bonus to AC since it can attack without repercussions.</li>
+                    </ul>
+                    </span>
+            </div>
+        </div>
+        <div class="score">
+            <label for="dmg">Damage</label>
+            <input type="number" id="dmg" name="dmg" min="0" step="any" />
+            <div class="tooltip">
+                ?
+                <span class="tooltiptext">
+                    Hit ratio not factored in. If a creature uses different actions each turn (breath weapons, spells), count the damage the creature deals in 3 rounds of combat, and divide by 3.
 
+                    <ul>
+                        <li>A <strong>gnoll</strong> gets a free Bite attack when it kills something; add 1/3 of their bite&rsquo;s damage to their total damage output. (Assume it triggers once per encounter.)</li>
+                        <li>Few enemies are fast enough to get away from an <strong>orc</strong>. Multiply the damage by 4/3. (Because it can get in 1 extra turn of attacks.)</li>
+                        <li>Multi-target spells hit 2 targets, and effects are counted as if those targets had failed their saving throws.</li>
+                    </ul>
+            </div>
+        </div>
+        <div class="score">
+            <label for="hit">Attack Bonus</label>
+            <input type="number" id="hit" name="hit" step="any" />
+            <div class="tooltip">
+                ?
+                <span class="tooltiptext">
+                    If a creature mainly uses a save DC, subtract 8 from it.
+
+                    <ul>
+                        <li><strong>Kobolds</strong>, <strong>wolves</strong>, <strong>sahuagin</strong>, and several other creatures get easy advantage on their attacks. Add a +3 bonus to compensate.</li>
+                    </ul>
+            </div>
+         </div>
+         <script src="calc_buttons.js"></script>
+        <script src="/calc.js"></script>
+    </div>
+    <div class="text">
+        <h1>What is this?</h1>
+        <p><sysname>The Next Level</sysname> is an alternate creature building & rating system for <sysname>Dungeons & Dragons 5e</sysname>, intended as a replacement for the default Challenge Rating system. Based on a level-by-level analysis of player characters and their abilities, <sysname>The Next Level</sysname> fixes common flaws, recalculating cumbersome number tables to be more intuitive and consistent:</p>
+        <ul>
+            <li><strong>Creature level = player level:</strong> A 3rd-level creature is a reasonable encounter for one 3rd-level player. Four players? Four creatures.</li>
+            <li><strong>Encounters last 3 turns:</strong> Enough to have exciting and tactical encounters, little enough that combat slog is a thing of the past.</li>
+            <li><strong>A 3-encounter adventuring day:</strong> The recommended 6-encounter adventuring day is a slog that poses little danger to your players for most of the game. <sysname>The Next Level</sysname> assumes 3 encounters each day; enough that players will worry about draining resources, but few enough to let you play through an entire day during a single game night.</li>
+            <li><strong>Consistent rewards:</strong> Players level up each time they gain 1000 XP. Whether they are level 3 or level 13, that number never changes. The math is always the same, so you can focus on the narrative instead of boring XP calculations.</li>
+        </ul>
+        <h1>How it works</h1>
+        <p>On the surface, this system works just like the CR rules in the Dungeon Master&rsquo;s Guide: calculate a creature&rsquo;s offensive and defensive potential; combine those to get your level score. The number tables have been plugged into the interactive calculator at the top of the page: type in the numbers you already know, and the calculator will use judicious castings of <spell>Assess Creature</spell> to work out the remaining values. Move your mouse over the question mark symbols for a quick explanation.</p>
+        <h1>Combat encounters</h1>
+        <p>Encounter building is still being playtested; but the gist of it is not complicated. Just be warned that we of <sysname>The Next Level, inc.</sysname> take no responsibility for any total party kills that occur because of <sysname>The Next Level</sysname>.</p>
+        <p>The table below lists XP values for creatures relative to player levels. Take the average level of your player characters; that is the party level. Creatures of the same level as the player characters are worth 80 XP. Multiply that by the number of players and you have an XP budget. XP increases linearly with the power level of a creature. So, a creature that is worth 160 XP is roughly twice as strong as a creature worth 80 XP, and four times as strong as a creature worth 40 XP.</p>
+        <table>
+            <thead><tr><th>Creature level</th><th>XP</th><th>Creature level</th><th>XP</th></tr></thead>
+            <tbody>
+                <tr><td>Party Level + 10</td><td>1000</td><td>Party Level + 1</td><td>100</td></tr>
+                <tr><td>Party Level + 9</td><td>800</td><td>Party Level + 0</td><td>80</td></tr>
+                <tr><td>Party Level + 8</td><td>600</td><td>Party Level - 1</td><td>60</td></tr>
+                <tr><td>Party Level + 7</td><td>480</td><td>Party Level - 2</td><td>60</td></tr>
+                <tr><td>Party Level + 6</td><td>360</td><td>Party Level - 3</td><td>40</td></tr>
+                <tr><td>Party Level + 5</td><td>280</td><td>Party Level - 4</td><td>40</td></tr>
+                <tr><td>Party Level + 4</td><td>200</td><td>Party Level - 5</td><td>20</td></tr>
+                <tr><td>Party Level + 3</td><td>160</td><td>Party Level - 6</td><td>20</td></tr>
+                <tr><td>Party Level + 2</td><td>120</td><td>Party Level - 7</td><td>10</td></tr>
+            </tbody>
+        </table>
+        <h1>Experience points</h1>
+        <p>For combat encounters, count the XP each individual creature is worth and divide it equally among players. Players of a different level than the party level receive more or less <caps>XP</caps> according to the table above, if you want to give lower-leveled players a chance to catch up.</p>
+        <p>Personally, I also hand out <caps>XP</caps> for roleplaying and good fun. My rules for non-combat <caps>XP</caps> are simple: 20 <caps>XP</caps> for a funny remark, or if a player does something in-character. 80 <caps>XP</caps> if they do major roleplaying, or something super creative. I also usually award inspiration at this point. Lastly, I award 120 <caps>XP</caps> when a major quest is completed, or if a player roleplays something despite it being majorly detrimental to their character.</p>
+        <h1>From the MM: Hell Hounds</h1>
+        <p>Let's use the <a tabindex="-1" href="https://5thsrd.org/gamemaster_rules/monsters/hell_hound/">Hell Hound</a> in the SRD as a guinea pig. A quick overview of their stat block is telling: These dogs are not tactically sophisticated. Their Intelligence is only 6. With a high Wisdom and proficiency in Perception, I would probably use Hell Hounds as hunting dogs for fiends, or other evil-aligned creatures who could find (and tame!) one.</p>
+        <p>Hell Hounds have one damage immunity: fire. Apart from <spell>fireball</spell> and lower-levelled fire-elemental spells, I think it&rsquo;s unlikely for players to base their damage output entirely on fire in particular, so this will not affect their Hit Point count. That leaves them with 7d8+14 hit points, an average of <strong>45.5</strong>.
+        <p>AC is a bit more involved. A Hell Hound&rsquo;s Armor Class is 15; I like to factor in their major saving throw bonuses, which are +1, +2, and +1 for their Dexterity, Constitution, and Wisdom, respectively. I roll saving throws the same way as attack rolls, against a static &lsquo;Saving Throw <caps>AC</caps>&rsquo;. The conversion is easy: just add 14. I like to count <caps>AC</caps>&ndash;saves in a 75&ndash;25 ratio:
+        <p><eq>15 &times; 0.75 + (15 (<em>Dex</em>) + 16 (<em>Con</em>) + 15 (<em>Wis</em>)) &divide; 3 &times; 0.25 = <strong>15.1</strong></eq></p>
+        <p>Next, let&rsquo;s calculate their damage output. A Hell Hound&rsquo;s <strong>bite</strong> attack deals 7.5 + 7 = 14.5 damage on average. Their <strong>fire breath</strong> is a bit more involved: as is usual for attacks that hit an area, let's assume two targets are caught in the blast. Each target takes 21 damage on average, so 21 + 21 = 42 damage in all. <strong>Fire breath</strong> has a 1 in 3 chance of recharging, so it will be used once, on average. Putting all of that together:
+        <p><eq>(14.5 + 14.5 + 42) &divide; 3 = <strong>23.7</strong> damage per turn.</eq></p>
+        <p>Calculating their Attack Bonus is easier. Hell Hounds have the <strong>pack tactics</strong> trait, which gives them an extra +3 bonus from advantage, on top of their base attack bonus of +5. Their <strong>fire breath</strong> is not rolled with advantage, though. It has a <caps>DC</caps> 12 saving throw, which is the same as an attack bonus of 12&nbsp;-&nbsp;8&nbsp;=&nbsp;4 (The <strong>fire breath</strong> save <caps>DC</caps> is calculated as 8 + Constitution modifier + proficiency). We know that this <strong>fire breath</strong> will be used once to hit 2 targets:</p>
+        <p><eq>(2 &times; (5 + 3) + 2 &times; 4) &divide; 4 = <strong>+6</strong> bonus to hit.</eq></p>
+        <p>Type in all of those numbers in the calculator above and check the box labeled <strong>creature level</strong>: <strong>6.7</strong>. Rounding that up to the nearest number, a hell-hound is a level <strong>7</strong> creature, using <caps>TNL</caps> rules.</p>
+        <h1>Bossbuilding: Cattle-Plague</h1>
+        <p><quote>It is early summer in Hylloch, a small town on the edge of the Greenlake. The harvest is shaping up to be a good one, and Lord Forsythe has called for woodcutters to expand the town with lumber from the neighboring Bolderwood. A massive corral was built in which cattle is kept from the various farmers living in town. A sturdy fence surrounds the prized beasts, and the gate is dutifully locked each evening by a servant from Forsythe manor. One day, shock! A cow's hind lies in a muddy patch, cut clean in two, the front half nowhere to be found. Who could have done this?</quote></p>
+        <cred>Credit to <a href="https://youtu.be/y_zl8WWaSyI?t=981">this Matthew Colville video</a> for the inspiration.</cred>
+        <p>This could be a fun intro-level quest to defeat an <strong>ankheg</strong> or another large beast, raised by a crazy hermit who living in the Bolderwood. The ankheg in the Monster Manual is a bit boring, though, so let's spice it up a little. If we want to build our boss for 4 level 1 players, we would need a creature of level 6 for a Medium encounter. There is a significant bump in ability at levels 5, 11, and 17 for both players and creatures though, so let's go with a conservative level <strong>5</strong> (200 XP).</p>
+        <p>I like my bosses to be dynamic encounters, so this Cattle-Plague should have multiple actions to  shake up the party. As a start, let's give it a bite attack that also inflicts a grapple; if we throw in the ankheg's digestive acid, that should provide incentive to get out, <em>fast</em>. Let's keep the acid breath weapon, but it shouldn't deal much damage; our party is only 1st-level, after all. Instead, let's change it to corrode the target's armor. That might seem harsh&mdash;but since this is the boss, there will be a quest reward afterwards anyway. Finally, we'll give it two dynamic reactions: if it is hit for a large amount of damage, its carapace will break and pools of acid are spilled everywhere; and once its hit points start to dwindle, it will burrow underground, dragging grappled characters with it while it flees.</p>
+        <p>Let's start by entering what we already know: a level (<strong>5</strong>). That gives us some values to work with. A giant insect is probably not very dextrous. It will probably have a decent Constitution score, and a lower-than-average Wisdom. Let's arbitrarily choose a -1, +2, and -1 modifier for each of those ability scores, giving it an average saving throw &lsquo;<caps>AC</caps>&rsquo; of <strong>13.7</strong>. We'd need an <caps>AC</caps> of <strong>16.8</strong> to compensate. So let's give it <caps>AC</caps> 17, and keep the beast's underbelly unprotected as a bonus for players who think to flip it over. Let's put the beast's hit points slightly below the recommended value, at <strong>52</strong>.</p>
+        <p>That leaves just the attacks. An effective attack bonus of may be a bit much to handle for a 1st-level party, though; let's drop that to 6. That also gives us a bit more damage to spread around the various attacks we had planned. First, let's get the basic bite and the acid breath out of the way:</p>
+        <p><strong>Bite.</strong> <em>Melee Weapon Attack:</em> +5 to hit, reach 5 ft., 1 target. <em>Hit:</em> 5 (2d4+2) piercing damage, and the target is grappled (escape DC 12).</p>
+        <p><strong>Acid Spray (Recharge 5-6).</strong> One target Cattle-Plague can see within 30 feet must make a <caps>DC</caps> 12 Dexterity saving throw. On a failure, it takes 2d6 acid damage. If the target is wearing armor, it corrodes and their armor class is permanently reduced by 1. If this reduces the armor's AC to 10, it is destroyed. On a successful saving throw, the target only takes half damage, and their armor is not corroded.</p>
+        <p>Reducing a target's <caps>AC</caps> indirectly raises the probability of our attacks hitting; so our attack bonus is still higher than the +5 from the bite. Let's also add a trait to codify the beast's digestive juices:</p>
+        <p><strong>Acid Saliva.</strong> A target grappled by Cattle-Plague takes 1d4 acid damage at the start of each of their turns.</p>
+        <p>That puts our damage output at (2 &times; (2d4+2 + 1d4) + 2d6) &divide; 3 = <strong>8.7</strong> damage per turn. So we have 11.4 - 8.7 = <strong></strong>2.7</strong> damage to divide between the acid pools and the fight-or-flight response:</p>
+        <p><strong>Splintering Carapace.</strong> Once Cattle-Plague takes a total of 20 damage, its carapace splinters, spilling acid in a 5-feet circle centered on itself. This acid deals 1d4 acid damage whenever a creature enters the area for the first time on its turn or starts its turn there. The acid disappears after 1 minute.</p>
+        <p><strong>Flight.</strong> Once Cattle-Plague drops to 17 hit points or below, it can immediately burrow up to its speed as a reaction.</p>
+        <p>And our boss creature is complete. All that is left is the adventure itself&hellip;I will leave that as an exercise for the reader. The full Cattle-Plague stat block is included below.</p>
+        <div class="statblock">
+            <name>Cattle-Plague</name>
+            <subname>Large monstrosity, unaligned</subname>
+            <val><strong>Armor Class</strong> 17 (natural armor, 13 while prone)</val>
+            <val><strong>Hit Points</strong> 52 (7d10 + 14)</val>
+            <val><strong>Speed</strong> 30 ft., burrow 10 ft.</val>
+            <div class="abilscores">
+                <div class="score">
+                    <caps>STR</caps><br>
+                    15 (+2)
+                </div>
+                <div class="score">
+                    <caps>DEX</caps><br>
+                    8 (-1)
+                </div>
+                <div class="score">
+                    <caps>CON</caps><br>
+                    14 (+2)
+                </div>
+                <div class="score">
+                    <caps>INT</caps><br>
+                    1 (-5)
+                </div>
+                <div class="score">
+                    <caps>WIS</caps><br>
+                    13 (+0)
+                </div>
+                <div class="score">
+                    <caps>CHA</caps><br>
+                    6 (-2)
+                </div>
+            </div>
+            <val><strong>Senses</strong> darkvision 60 ft., tremorsense 60 ft., passive Perception 9</val>
+            <val><strong>Languages</strong> &mdash;</val>
+            <val><strong>Level</strong> 5</val>
+            <subhead>Traits</subhead>
+            <par><strong>Acid Saliva.</strong> A target grappled by Cattle-Plague takes 1d4 acid damage at the start of each of their turns.</par>
+            <par><strong>Splintering Carapace.</strong> Once Cattle-Plague takes a total of 20 damage, its carapace splinters, spilling acid in a 5-feet circle centered on itself. This acid deals 1d4 acid damage whenever a creature enters the area for the first time on its turn or starts its turn there. The acid disappears after 1 minute.</par>
+            <subhead>Actions</subhead>
+            <par><strong>Bite.</strong> <em>Melee Weapon Attack:</em> +5 to hit, reach 5 ft., 1 target. <em>Hit:</em> 5 (2d4+2) piercing damage, and the target is grappled (escape DC 12).</par>
+            <par><strong>Acid Spray (Recharge 5-6).</strong> One target Cattle-Plague can see within 30 feet must make a <caps>DC</caps> 12 Dexterity saving throw. On a failure, it takes 2d6 acid damage. If the target is wearing armor, it corrodes and their armor class is permanently reduced by 1. If this reduces the armor's AC to 10, it is destroyed. On a successful saving throw, the target only takes half damage, and their armor is not corroded.</par>
+            <subhead>Reactions</subhead>
+            <par><strong>Flight.</strong> Once Cattle-Plague drops to 17 hit points or below, it can immediately burrow up to its speed as a reaction.</par>
+        </div>
 </html>
