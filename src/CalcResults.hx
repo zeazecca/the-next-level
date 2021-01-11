@@ -23,11 +23,11 @@ class CalcResults {
 	}
 
 	private static function estimateLvlFromHp(hp:Float):Int {
-		return Data.STATS.slice(1).fold((entry, best : XpEntry) -> if (isCloserTo(entry.hp, best.hp, hp)) entry else best, Data.STATS[0]).lvl;
+		return Data.STATS.slice(1).fold((entry, best : XpEntry) -> if (isCloserTo(entry.hp, best.hp, hp)) entry else best, Data.DEFAULT).lvl;
 	}
 
 	private static function estimateLvlFromDmg(dmg:Float):Int {
-		return Data.STATS.slice(1).fold((entry, best : XpEntry) -> if (isCloserTo(entry.dmg, best.dmg, dmg)) entry else best, Data.STATS[0]).lvl;
+		return Data.STATS.slice(1).fold((entry, best : XpEntry) -> if (isCloserTo(entry.dmg, best.dmg, dmg)) entry else best, Data.DEFAULT).lvl;
 	}
 
 	private static function playerHitProb(lvl:Int, ac:Float):Float {
@@ -44,19 +44,19 @@ class CalcResults {
 
 	private static function estimateLvlFromFe(ferocity:Float):Int {
 		return Data.STATS.slice(1)
-			.fold((entry, best : XpEntry) -> if (isCloserTo(entry.ferocity, best.ferocity, ferocity)) entry else best, Data.STATS[0])
+			.fold((entry, best : XpEntry) -> if (isCloserTo(entry.ferocity, best.ferocity, ferocity)) entry else best, Data.DEFAULT)
 			.lvl;
 	}
 
 	private static function estimateLvlFromEn(endurance:Float):Int {
 		return Data.STATS.slice(1)
-			.fold((entry, best : XpEntry) -> if (isCloserTo(entry.endurance, best.endurance, endurance)) entry else best, Data.STATS[0])
+			.fold((entry, best : XpEntry) -> if (isCloserTo(entry.endurance, best.endurance, endurance)) entry else best, Data.DEFAULT)
 			.lvl;
 	}
 
 	private static function estimateLvlFromEnFe(endurance:Float, ferocity:Float):Float {
 		final prod:Float = endurance * ferocity;
-		final lvl: Int = Data.STATS.slice(1).fold((entry, best : XpEntry) -> if (isSmallerAndCloserTo(entry.product, best.product, prod)) entry else best, Data.STATS[0]).lvl;
+		final lvl: Int = Data.STATS.slice(1).fold((entry, best : XpEntry) -> if (isSmallerAndCloserTo(entry.product, best.product, prod)) entry else best, Data.DEFAULT).lvl;
 		var adj: Float = 0.0;
 		if (lvl != Data.MAX_LVL) {
 			final current: Float = lvlEntry(lvl).product;
@@ -88,7 +88,7 @@ class CalcResults {
 			return lvlEntry(lvl).product / ferocity;
 		}
 
-		lvl = (if (lvl != null) lvl else Data.STATS[0].lvl) + lvlAdjustment;
+		lvl = (if (lvl != null) lvl else Data.DEFAULT.lvl) + lvlAdjustment;
 		return lvlEntry(lvl).endurance;
 	}
 
@@ -102,7 +102,7 @@ class CalcResults {
 			return lvlEntry(lvl).product / endurance;
 		}
 
-		lvl = (if (lvl != null) lvl else Data.STATS[0].lvl) + lvlAdjustment;
+		lvl = (if (lvl != null) lvl else Data.DEFAULT.lvl) + lvlAdjustment;
 		return lvlEntry(lvl).ferocity;
 	}
 
