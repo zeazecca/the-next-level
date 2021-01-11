@@ -2,6 +2,8 @@ html {
     font-size: 1.2em;
 }
 
+@media only screen and (min-width: 600px) { html { font-size: 1.5em; }}
+
 body {
     margin: 4rem 0 12rem 0;
     font-family: 'Fira Sans', sans-serif;
