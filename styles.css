@@ -1,4 +1,5 @@
 html { font-size: 1.93vw; }
+@media all and (max-width: 1000px) { html { font-size: 18px; }}
 
 body {
     margin: 4rem 0 12rem 0;
