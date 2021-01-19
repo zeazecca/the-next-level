@@ -1,6 +1,6 @@
 html { font-size: 2.4vw; }
-@media all and (min-width: 830px) { html { font-size: 20px; } }
-@media all and (max-width: 520px) { html { font-size: 18px; } }
+@media all and (min-width: 1000px) { html { font-size: 24px; } }
+@media all and (max-width: 833.33px) { html { font-size: 20px; } }
 
 body {
     margin: 4rem 0 12rem 0;
@@ -11,13 +11,12 @@ body {
 }
 
 p {
-    padding-top: 0;
-    padding-bottom: 0.5rem;
+    padding: 0 0 0.5rem 0;
 }
 
 .header, .calculator, .text {
     width: 30em;
-    margin-bottom: 4rem;
+    margin: 0 0 4rem 0;
 }
 
 .header {
@@ -32,8 +31,7 @@ booktitle {
     font-family: 'Grenze Gotisch', serif;
     font-size: 1.5em;
     line-height: 100%;
-    padding-top: 2rem;
-    padding-bottom: 4rem;
+    padding: 2rem 0 4rem 0;
 }
 
 booktitle large {
@@ -52,6 +50,7 @@ eq {
 
 table {
     width: 100%;
+    border-collapse: collapse;
 }
 
 table thead th {
@@ -70,8 +69,7 @@ th, td {
 .text h1 {
     font-family: 'Grenze Gotisch', serif;
     font-size: 2.5em;
-    padding-bottom: 0;
-    padding-top: 1rem;
+    padding: 1rem 0 0 0;
 }
 
 .text ul {
