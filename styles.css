@@ -1,46 +1,58 @@
-html { font-size: 2.4vw; }
-@media all and (min-width: 1000px) { html { font-size: 24px; } }
-@media all and (max-width: 833.33px) { html { font-size: 20px; } }
+html {
+    box-sizing: border-box;
+    font-size: 2.4vw;
+}
+
+@media all and (min-width:1000px) { html { font-size: 24px; } }
+
+@media all and (max-width:520px) { 
+    html{ font-size: 18px; }
+    .tooltip { display: none; }
+}
 
 body {
-    margin: 4rem 0 12rem 0;
+    color: #111;
+    background: #fcfcfc;
     font-family: 'Fira Sans', sans-serif;
+    line-height: 1.4em;
+    margin: 4rem auto 16rem auto;
+    max-width: 30rem;
+    padding: 0 1rem 0 1rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
+}
+
+.text {
+    display: block;
+    margin: 0;
+    padding: 0;
 }
 
 p {
-    padding: 0 0 0.5rem 0;
+    margin: 0 0 1em 0;
+    padding: 0;
 }
 
-.header, .calculator, .text {
-    width: 30em;
-    margin: 0 0 4rem 0;
-}
-
-.header {
-    text-align: center;
+quote {
+    display: block;
+    font-size: 0.9em;
     font-style: italic;
+    line-height: 140%;
+    margin: 0 2em 0 2em;
 }
 
-booktitle {
+.text ul {
+    padding: 0 0 0 1em;
+}
+
+.text li {
+    margin: 0 0 0.25em 0;
+}
+
+cred {
     display: block;
+    font-size: 0.8em;
     text-align: center;
-    font-style: normal;
-    font-family: 'Grenze Gotisch', serif;
-    font-size: 1.5em;
-    line-height: 100%;
-    padding: 2rem 0 4rem 0;
-}
-
-booktitle large {
-    display: block;
-    font-size: 3.5em;
-}
-
-a {
-    text-decoration: none;
 }
 
 eq {
@@ -48,68 +60,101 @@ eq {
     text-align: center;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
+h1 {
+    font-family: 'Grenze Gotisch', serif;
+    font-size: 2.5em;
+    line-height: 100%;
+    margin: 0;
+    padding: 0.5em 0 0.1em 0;
 }
 
-table thead th {
-    border-bottom: 2px solid black;
+a {
+    text-decoration: none;
+}
+
+em {
+    font-style: italic;
+}
+
+strong {
+    font-style: bold;
+}
+
+caps {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+sysname {
+    text-transform: capitalize;
+    font-style: italic;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+}
+
+th {
+    border-bottom: 0.5px #ccc solid;
 }
 
 th, td {
-    padding: 0.15rem;
+    padding: 0.15em 0.5em 0.15em 0.5em;
     text-align: center;
 }
 
-.text {
-    line-height: 1.4em;
+.header {
+    display: block;
+    font-style: italic;
+    text-align: center;
+    margin: 0 0 4rem 0;
 }
 
-.text h1 {
+.header h1 {
+    display: block;
     font-family: 'Grenze Gotisch', serif;
-    font-size: 2.5em;
-    padding: 1rem 0 0 0;
+    font-size: 1.5rem;
+    font-style: normal;
+    line-height: 100%;
+    text-align: center;
 }
 
-.text ul {
-    padding-left: 1rem;
+.header strong {
+    display: block;
+    font-size: 5.25rem;
 }
 
-.text li {
-    padding-left: 0.25rem;
-}
-
-.text li + li {
-    padding-top: 0.2rem;
-}
-
-.calculator .hint, .calculator label, .calculator input {
+.calculator {
+    align-items: flex-end;
+    align-self:center;
+    display: inline-flex;
+    flex-direction: column;
     font-family: 'Grenze Gotisch', serif;
-    font-size: 2.5rem;
+    font-size: 1.75em;
+    margin: 0 0 2rem 0;
 }
 
 .tooltip {
-    font-family: 'Grenze Gotisch', serif;
-    font-size: 2.5rem;
     position: relative;
     display: inline-block;
 }
 
 .tooltiptext {
-    position: relative;
-    line-height: 1.25em;
-    top: -1rem;
-    left: 1.5rem;
-    width: 17.5rem;
-    font-family: 'Fira Sans', sans-serif;
-    font-size: 0.85rem;
-    visibility: hidden;
-    text-align: left;
-    border: 2px solid black;
+    background: #fcfcfc;
     border-radius: 0.25rem;
-    padding: 0.5rem;
+    border: 2px solid #111;
+    font-family: 'Fira Sans', sans-serif;
+    font-size: 0.9rem;
+    left: -50vw;
+    line-height: 140%;
+    padding: 0.5em;
     position: absolute;
+    text-align: left;
+    top: 2em;
+    visibility: hidden;
+    width: 75vw;
     z-index: 1;
 }
 
@@ -129,113 +174,97 @@ th, td {
     visibility: visible;
 }
 
-cred {
-    display: block;
-    font-size: 0.8em;
-    padding: 0;
-    margin: 0;
-    text-align: center;
-}
-
-quote {
-    display: block;
-    font-style: italic;
-    font-size: 0.9em;
-    line-height: 130%;
-    margin: 0 3rem 0 4rem;
-}
-
 .calculator .score {
-    display: flex;
-    justify-content: right;
-    align-items: center;
+    display: inline-block;
+}
+
+.calculator label {
+    margin-right: 0.25em;
+    white-space: nowrap;
 }
 
 .calculator input {
-    border: none;
-    outline: none;
     appearance: textfield;
-    margin-left: 1rem;
-    width: 12rem;
-    height: 3rem;
     background: none;
+    border: none;
+    font-family: 'Grenze Gotisch', serif;
+    font-size: 1.0em;
+    outline: none;
+    width: 4em;
 }
 
 .calculator input:invalid {
-    color: crimson;
     box-shadow: none;
+    color: crimson;
 }
 
-em, spell {
-    font-style: italic;
+.splittable {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
-strong {
-    font-weight: 700;
+.splittable table + table {
+    border-left: 2px dashed #ccc;
 }
 
-caps {
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-sysname {
-    text-transform: capitalize;
-    font-style: italic;
-}
-
-.statblock {
-    font-size: 0.85rem;
-    border: 2px solid black;
-    border-radius: 0.25rem;
-    padding: 0.5rem;
+.stat-block {
+    border: 2px solid #111;
+    border-radius: 0.25em;
+    font-size: 0.9em;
     line-height: 140%;
+    padding: 0.5em;
 }
 
-.statblock name {
+.stat-block h1, h2, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+.stat-block li {
+    list-style-type: none;
+    padding-left: 1.5em;
+    text-indent: -1.5em;
+}
+
+.stat-block h1 {
     font-size: 2.5em;
-    font-family: 'Grenze Gotisch', sans-serif;
-    display: block;
 }
 
-.statblock subname {
-    font-size: 0.85em;
-    padding: 0 0 0.25rem 0;
-    margin: 0.5rem 0 0.5rem 0;
-    display: block;
+.stat-block h2 {
+    border-bottom: 0.5px solid #111;
+    font-size: 0.9em;
     font-style: italic;
-    border-bottom: 1px solid black;
+    font-weight: normal;
+    margin-bottom: 0.5em;
 }
 
-.statblock val {
-    display: block;
+.stat-block h3 {
+    border-top: 0.5px solid #111;
+    margin: 0.5em 0 0.25em 0;
+    font-size: 1.2em;
+    font-weight: normal;
+    padding: 0.25em 0 0 0;
 }
 
-.statblock .abilscores {
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-    padding: 0.25rem 0 0.25rem 0;
-    margin: 0.5rem 0 0.5rem 0;
+.stat-block p {
+    margin: 0 0 0.5em 0;
+    padding: 0;
+}
+
+.stat-block .abilscores {
+    border-top: 0.5px solid #111;
+    border-bottom: 0.5px solid #111;
+    padding: 0.25em 0 0.25em 0;
+    margin: 0.5em 0 0.5em 0;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
 }
 
-.statblock .abilscores .score {
+.stat-block .abilscores .score {
     display: flex;
     flex-direction: column;
-}
-
-.statblock par {
-    display: block;
-    margin-top: 0.5rem;
-}
-
-.statblock subhead {
-    display: block;
-    margin-top: 0.5rem;
-    padding-top: 0.25rem;
-    font-size: 1.8em;
-    font-family: 'Grenze Gotisch', sans-serif;
-    border-top: 1px solid black;
 }

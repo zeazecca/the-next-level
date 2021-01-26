@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,700;1,400&family=Grenze+Gotisch:wght@700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="styles.css" rel="stylesheet" />
     <title>The Next Level</title>
 </head>
@@ -12,9 +13,9 @@
 <body>
     <div class="header">
         In the charnel pits of a hidden tomb, you uncover a tome of secret lore, tarnished black-silver glyphs spelling
-
-        <booktitle>The Next<large>Level</large></booktitle>
+        <h1>The Next<strong>Level</strong></h1>
     </div>
+    
     <div class="calculator">
         <div class="score">
             <label for="level">Creature Level</label>
@@ -87,8 +88,9 @@
          </div>
         <script src="calc.js"></script>
     </div>
+
     <div class="text">
-        <h1>What is this?</h1>
+        <h1>What&rsquo;s this?</h1>
         <p><sysname>The Next Level</sysname> is an alternate creature building & rating system for <sysname>Dungeons & Dragons 5e</sysname>, intended as a replacement for the default Challenge Rating system. Based on a level-by-level analysis of player characters and their abilities, <sysname>The Next Level</sysname> fixes common flaws, recalculating cumbersome number tables to be more intuitive and consistent:</p>
         <ul>
             <li><strong>Creature level = player level:</strong> A 3rd-level creature is a reasonable encounter for one 3rd-level player. Four players? Four creatures.</li>
@@ -101,20 +103,36 @@
         <h1>Combat encounters</h1>
         <p>Encounter building is still being playtested; but the gist of it is not complicated. Just be warned that we of <sysname>The Next Level, inc.</sysname> take no responsibility for any total party kills that occur because of <sysname>The Next Level</sysname>.</p>
         <p>The table below lists XP values for creatures relative to player levels. Take the average level of your player characters; that is the party level. Creatures of the same level as the player characters are worth 80 XP. Multiply that by the number of players and you have an XP budget. XP increases linearly with the power level of a creature. So, a creature that is worth 160 XP is roughly twice as strong as a creature worth 80 XP, and four times as strong as a creature worth 40 XP.</p>
-        <table>
-            <thead><tr><th>Creature level</th><th>XP</th><th>Creature level</th><th>XP</th></tr></thead>
-            <tbody>
-                <tr><td>Party Level + 10</td><td>1000</td><td>Party Level + 1</td><td>100</td></tr>
-                <tr><td>Party Level + 9</td><td>800</td><td>Party Level + 0</td><td>80</td></tr>
-                <tr><td>Party Level + 8</td><td>600</td><td>Party Level - 1</td><td>60</td></tr>
-                <tr><td>Party Level + 7</td><td>480</td><td>Party Level - 2</td><td>60</td></tr>
-                <tr><td>Party Level + 6</td><td>360</td><td>Party Level - 3</td><td>40</td></tr>
-                <tr><td>Party Level + 5</td><td>280</td><td>Party Level - 4</td><td>40</td></tr>
-                <tr><td>Party Level + 4</td><td>200</td><td>Party Level - 5</td><td>20</td></tr>
-                <tr><td>Party Level + 3</td><td>160</td><td>Party Level - 6</td><td>20</td></tr>
-                <tr><td>Party Level + 2</td><td>120</td><td>Party Level - 7</td><td>10</td></tr>
-            </tbody>
-        </table>
+        <div class="splittable">
+            <table>
+                <thead><tr><th>Creature level</th><th>XP</th>
+                <tbody>
+                    <tr><td>Party Level + 10</td><td>1000</td>
+                    <tr><td>Party Level + 9</td><td>800</td>
+                    <tr><td>Party Level + 8</td><td>600</td>
+                    <tr><td>Party Level + 7</td><td>480</td>
+                    <tr><td>Party Level + 6</td><td>360</td>
+                    <tr><td>Party Level + 5</td><td>280</td>
+                    <tr><td>Party Level + 4</td><td>200</td>
+                    <tr><td>Party Level + 3</td><td>160</td>
+                    <tr><td>Party Level + 2</td><td>120</td>
+                </tbody>
+            </table>
+            <table>
+                <thead><th>Creature level</th><th>XP</th></tr></thead>
+                <tbody>
+                    <td>Party Level + 1</td><td>100</td></tr>
+                    <td>Party Level + 0</td><td>80</td></tr>
+                    <td>Party Level - 1</td><td>60</td></tr>
+                    <td>Party Level - 2</td><td>60</td></tr>
+                    <td>Party Level - 3</td><td>40</td></tr>
+                    <td>Party Level - 4</td><td>40</td></tr>
+                    <td>Party Level - 5</td><td>20</td></tr>
+                    <td>Party Level - 6</td><td>20</td></tr>
+                    <td>Party Level - 7</td><td>10</td></tr>
+                </tbody>
+            </table>
+        </div>
         <h1>Experience points</h1>
         <p>For combat encounters, count the XP each individual creature is worth and divide it equally among players. Players of a different level than the party level receive more or less <caps>XP</caps> according to the table above, if you want to give lower-leveled players a chance to catch up.</p>
         <p>Personally, I also hand out <caps>XP</caps> for roleplaying and good fun. My rules for non-combat <caps>XP</caps> are simple: 20 <caps>XP</caps> for a funny remark, or if a player does something in-character. 80 <caps>XP</caps> if they do major roleplaying, or something super creative. I also usually award inspiration at this point. Lastly, I award 120 <caps>XP</caps> when a major quest is completed, or if a player roleplays something despite it being majorly detrimental to their character.</p>
@@ -143,12 +161,12 @@
         <p><strong>Splintering Carapace.</strong> Once Cattle-Plague takes a total of 20 damage, its carapace splinters, spilling acid in a 5-feet circle centered on itself. This acid deals 1d4 acid damage whenever a creature enters the area for the first time on its turn or starts its turn there. The acid disappears after 1 minute.</p>
         <p><strong>Flight.</strong> Once Cattle-Plague drops to 17 hit points or below, it can immediately burrow up to its speed as a reaction.</p>
         <p>And our boss creature is complete! All that is left is the adventure itself, which I leave for you to write :P</p>
-        <div class="statblock">
-            <name>Cattle-Plague</name>
-            <subname>Large monstrosity, unaligned</subname>
-            <val><strong>Armor Class</strong> 17 (natural armor, 13 while prone)</val>
-            <val><strong>Hit Points</strong> 52 (7d10 + 14)</val>
-            <val><strong>Speed</strong> 30 ft., burrow 10 ft.</val>
+        <div class="stat-block">
+            <h1>Cattle-Plague</h2>
+            <h2>Large monstrosity, unaligned</h2>
+            <li><strong>Armor Class</strong> 17 (natural armor, 13 while prone)</li>
+            <li><strong>Hit Points</strong> 52 (7d10 + 14)</li>
+            <li><strong>Speed</strong> 30 ft., burrow 10 ft.</li>
             <div class="abilscores">
                 <div class="score">
                     <caps>STR</caps><br>
@@ -175,16 +193,17 @@
                     6 (-2)
                 </div>
             </div>
-            <val><strong>Senses</strong> darkvision 60 ft., tremorsense 60 ft., passive Perception 9</val>
-            <val><strong>Languages</strong> &mdash;</val>
-            <val><strong>Level</strong> 5</val>
-            <subhead>Traits</subhead>
-            <par><strong>Acid Saliva.</strong> A target grappled by Cattle-Plague takes 1d4 acid damage at the start of each of their turns.</par>
-            <par><strong>Splintering Carapace.</strong> Once Cattle-Plague takes a total of 20 damage, its carapace splinters, spilling acid in a 5-feet circle centered on itself. This acid deals 1d4 acid damage whenever a creature enters the area for the first time on its turn or starts its turn there. The acid disappears after 1 minute.</par>
-            <subhead>Actions</subhead>
-            <par><strong>Bite.</strong> <em>Melee Weapon Attack:</em> +5 to hit, reach 5 ft., 1 target. <em>Hit:</em> 5 (2d4+2) piercing damage, and the target is grappled (escape DC 12).</par>
-            <par><strong>Acid Spray (Recharge 5-6).</strong> One target Cattle-Plague can see within 30 feet must make a <caps>DC</caps> 12 Dexterity saving throw. On a failure, it takes 2d6 acid damage. If the target is wearing armor, it corrodes and their armor class is permanently reduced by 1. If this reduces the armor&rsquo;s AC to 10, it is destroyed. On a successful saving throw, the target only takes half damage, and their armor is not corroded.</par>
-            <subhead>Reactions</subhead>
-            <par><strong>Flight.</strong> Once Cattle-Plague drops to 17 hit points or below, it can immediately burrow up to its speed as a reaction.</par>
+            <li><strong>Senses</strong> darkvision 60 ft., tremorsense 60 ft., passive Perception 9</li>
+            <li><strong>Languages</strong> &mdash;</li>
+            <li><strong>Level</strong> 5</li>
+            <h3>Traits</h3>
+            <p><strong>Acid Saliva.</strong> A target grappled by Cattle-Plague takes 1d4 acid damage at the start of each of their turns.</p>
+            <p><strong>Splintering Carapace.</strong> Once Cattle-Plague takes a total of 20 damage, its carapace splinters, spilling acid in a 5-feet circle centered on itself. This acid deals 1d4 acid damage whenever a creature enters the area for the first time on its turn or starts its turn there. The acid disappears after 1 minute.</p>
+            <h3>Actions</h3>
+            <p><strong>Bite.</strong> <em>Melee Weapon Attack:</em> +5 to hit, reach 5 ft., 1 target. <em>Hit:</em> 5 (2d4+2) piercing damage, and the target is grappled (escape DC 12).</p>
+            <p><strong>Acid Spray (Recharge 5-6).</strong> One target Cattle-Plague can see within 30 feet must make a <caps>DC</caps> 12 Dexterity saving throw. On a failure, it takes 2d6 acid damage. If the target is wearing armor, it corrodes and their armor class is permanently reduced by 1. If this reduces the armor&rsquo;s AC to 10, it is destroyed. On a successful saving throw, the target only takes half damage, and their armor is not corroded.</p>
+            <h3>Reactions</h3>
+            <p><strong>Flight.</strong> Once Cattle-Plague drops to 17 hit points or below, it can immediately burrow up to its speed as a reaction.</p>
         </div>
+    </div>
 </html>
