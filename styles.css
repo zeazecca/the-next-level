@@ -7,19 +7,18 @@ html {
 
 @media all and (max-width:520px) { 
     html{ font-size: 18px; }
-    .tooltip { display: none; }
 }
 
 body {
-    color: #111;
     background: #fcfcfc;
+    color: #111;
+    display: flex;
+    flex-direction: column;
     font-family: 'Fira Sans', sans-serif;
     line-height: 1.4em;
     margin: 4rem auto 16rem auto;
     max-width: 30rem;
     padding: 0 1rem 0 1rem;
-    display: flex;
-    flex-direction: column;
 }
 
 .text {
@@ -101,7 +100,7 @@ th {
 }
 
 th, td {
-    padding: 0.15em 0.5em 0.15em 0.5em;
+    padding: 0.15em 0.15em 0.15em 0.15em;
     text-align: center;
 }
 
@@ -126,15 +125,6 @@ th, td {
     font-size: 5.25rem;
 }
 
-.calculator {
-    align-items: flex-end;
-    align-self:center;
-    display: inline-flex;
-    flex-direction: column;
-    font-family: 'Grenze Gotisch', serif;
-    font-size: 1.75em;
-    margin: 0 0 2rem 0;
-}
 
 .tooltip {
     position: relative;
@@ -172,6 +162,20 @@ th, td {
 
 .tooltip:hover .tooltiptext {
     visibility: visible;
+}
+
+@media all and (max-width:520px) { 
+    .tooltip { display: none; }
+}
+
+.calculator {
+    align-items: flex-end;
+    align-self:center;
+    display: inline-flex;
+    flex-direction: column;
+    font-family: 'Grenze Gotisch', serif;
+    font-size: 1.75em;
+    margin: 0 0 2rem 0;
 }
 
 .calculator .score {
