@@ -1,5 +1,7 @@
+#if js
 import js.Browser;
 import js.html.InputElement;
+#end
 
 using ingot.ds.Option;
 using ingot.Floats;
@@ -173,14 +175,15 @@ function interpolateFromLvl(lvl:Float, hp:Option<Float>, ac:Option<Float>, dmg:O
     return [lvl, hp, ac, dmg, hit];
 }
 
-function computeProd(hp:Option<Float>, ac:Option<Float>, dmg:Option<Float>, hit:Option<Float>):Float {
+function computeProd(estimatedLvl:Float, hp:Option<Float>, ac:Option<Float>, dmg:Option<Float>, hit:Option<Float>):Float {
+    final entry = data[closestIndex(LVL, estimatedLvl)];
     final optEndurance = switch [hp, ac, dmg, hit] {
-        case [Some(hpVal), Some(_), _, _]: Some(computeEndurance(data[closestIndex(HP, hpVal)], hp, ac, dmg, hit));
+        case [Some(_), Some(_), _, _]: Some(computeEndurance(entry, hp, ac, dmg, hit));
         case [Some(hpVal), _, _, _]: Some(hpVal / DEFAULT_PLAYER_HITPROB);
         case [_, _, _, _]: None;
     }
     final optFerocity = switch [hp, ac, dmg, hit] {
-        case [_, _, Some(dmgVal), Some(_)]: Some(computeFerocity(data[closestIndex(DMG, dmgVal)], hp, ac, dmg, hit));
+        case [_, _, Some(_), Some(_)]: Some(computeFerocity(entry, hp, ac, dmg, hit));
         case [_, _, Some(dmgVal), _]: Some(dmgVal * DEFAULT_CREATURE_HITPROB);
         case [_, _, _, _]: None;
     }
@@ -206,12 +209,13 @@ function computeProd(hp:Option<Float>, ac:Option<Float>, dmg:Option<Float>, hit:
 
 function computeLvl(lvl:Option<Float>, hp:Option<Float>, ac:Option<Float>, dmg:Option<Float>, hit:Option<Float>):Float return switch lvl {
     case Some(lvl): lvl;
-    case None: lvlByProd(computeProd(hp, ac, dmg, hit));
+    case None: lvlByProd(computeProd(1.0, hp, ac, dmg, hit));
 }
 
 inline function interpolate(lvl:Option<Float>, hp:Option<Float>, ac:Option<Float>, dmg:Option<Float>,
         hit:Option<Float>):Array<Float> return interpolateFromLvl(computeLvl(lvl, hp, ac, dmg, hit), hp, ac, dmg, hit);
 
+#if js
 class FloatAdapter {
     private final input:InputElement;
 
@@ -221,7 +225,7 @@ class FloatAdapter {
 
     public function get():Option<Float> return input.value.asFloat();
 
-    public function set(f:Float):Void input.placeholder = f.toString(2);
+    public function set(f:Float):Void input.placeholder = f.toString(1);
 }
 
 function calculator(lvl:FloatAdapter, hp:FloatAdapter, ac:FloatAdapter, dmg:FloatAdapter, hit:FloatAdapter):Void {
@@ -232,8 +236,10 @@ function calculator(lvl:FloatAdapter, hp:FloatAdapter, ac:FloatAdapter, dmg:Floa
     dmg.set(outputs[DMG]);
     hit.set(outputs[HIT]);
 }
+#end
 
 function main():Void {
+    #if js
     final lvlInput = cast Browser.document.getElementById("level");
     final hpInput = cast Browser.document.getElementById("hp");
     final acInput = cast Browser.document.getElementById("ac");
@@ -245,11 +251,13 @@ function main():Void {
     final ac = new FloatAdapter(cast Browser.document.getElementById("ac"));
     final dmg = new FloatAdapter(cast Browser.document.getElementById("dmg"));
     final hit = new FloatAdapter(cast Browser.document.getElementById("hit"));
-    final calculator = calculator.bind(lvl, hp, ac, dmg, hit);
+    calculator(lvl, hp, ac, dmg, hit);
 
+    final calculator = calculator.bind(lvl, hp, ac, dmg, hit);
     lvlInput.addEventListener("change", calculator);
     hpInput.addEventListener("change", calculator);
     acInput.addEventListener("change", calculator);
     dmgInput.addEventListener("change", calculator);
     hitInput.addEventListener("change", calculator);
+    #end
 }

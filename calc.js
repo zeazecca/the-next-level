@@ -26,7 +26,7 @@ FloatAdapter.prototype = {
 		return ingot_Floats.asFloat(this.input.value);
 	}
 	,set: function(f) {
-		this.input.placeholder = ingot_Floats.toString(f,2);
+		this.input.placeholder = ingot_Floats.toString(f,1);
 	}
 };
 function Main_closestIndex(type,target) {
@@ -219,21 +219,10 @@ function Main_interpolateFromLvl(lvl,hp,ac,dmg,hit) {
 	}
 	return [lvl,hp1,ac1,dmg1,hit1];
 }
-function Main_computeProd(hp,ac,dmg,hit) {
-	var optEndurance;
-	if(hp._hx_index == 0) {
-		var _g = hp.value;
-		optEndurance = ac._hx_index == 0 ? ingot_ds_Option.Some(Main_computeEndurance(Main_data[Main_closestIndex(Main_HP,_g)],hp,ac,dmg,hit)) : ingot_ds_Option.Some(_g / Main_DEFAULT_PLAYER_HITPROB);
-	} else {
-		optEndurance = ingot_ds_Option.None;
-	}
-	var optFerocity;
-	if(dmg._hx_index == 0) {
-		var _g = dmg.value;
-		optFerocity = hit._hx_index == 0 ? ingot_ds_Option.Some(Main_computeFerocity(Main_data[Main_closestIndex(Main_DMG,_g)],hp,ac,dmg,hit)) : ingot_ds_Option.Some(_g * Main_DEFAULT_CREATURE_HITPROB);
-	} else {
-		optFerocity = ingot_ds_Option.None;
-	}
+function Main_computeProd(estimatedLvl,hp,ac,dmg,hit) {
+	var entry = Main_data[Main_closestIndex(Main_LVL,estimatedLvl)];
+	var optEndurance = hp._hx_index == 0 ? ac._hx_index == 0 ? ingot_ds_Option.Some(Main_computeEndurance(entry,hp,ac,dmg,hit)) : ingot_ds_Option.Some(hp.value / Main_DEFAULT_PLAYER_HITPROB) : ingot_ds_Option.None;
+	var optFerocity = dmg._hx_index == 0 ? hit._hx_index == 0 ? ingot_ds_Option.Some(Main_computeFerocity(entry,hp,ac,dmg,hit)) : ingot_ds_Option.Some(dmg.value * Main_DEFAULT_CREATURE_HITPROB) : ingot_ds_Option.None;
 	var endurance;
 	var ferocity;
 	switch(optEndurance._hx_index) {
@@ -272,7 +261,7 @@ function Main_computeLvl(lvl,hp,ac,dmg,hit) {
 	case 0:
 		return lvl.value;
 	case 1:
-		return Main_lvlByProd(Main_computeProd(hp,ac,dmg,hit));
+		return Main_lvlByProd(Main_computeProd(1.0,hp,ac,dmg,hit));
 	}
 }
 function Main_calculator(lvl,hp,ac,dmg,hit) {
@@ -299,8 +288,14 @@ function Main_main() {
 	var ac = new FloatAdapter(window.document.getElementById("ac"));
 	var dmg = new FloatAdapter(window.document.getElementById("dmg"));
 	var hit = new FloatAdapter(window.document.getElementById("hit"));
+	Main_calculator(lvl,hp,ac,dmg,hit);
+	var lvl1 = lvl;
+	var hp1 = hp;
+	var ac1 = ac;
+	var dmg1 = dmg;
+	var hit1 = hit;
 	var calculator = function() {
-		Main_calculator(lvl,hp,ac,dmg,hit);
+		Main_calculator(lvl1,hp1,ac1,dmg1,hit1);
 	};
 	lvlInput.addEventListener("change",calculator);
 	hpInput.addEventListener("change",calculator);
@@ -325,11 +320,11 @@ haxe_iterators_ArrayIterator.prototype = {
 var ingot_Floats = function() { };
 ingot_Floats.__name__ = true;
 ingot_Floats.asFloat = function(str) {
-	var _g = parseFloat(str);
-	if(_g == null) {
+	var f = parseFloat(str);
+	if(isNaN(f)) {
 		return ingot_ds_Option.None;
 	} else {
-		return ingot_ds_Option.Some(_g);
+		return ingot_ds_Option.Some(f);
 	}
 };
 ingot_Floats.toString = function(f,decimals) {
