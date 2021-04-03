@@ -1,3 +1,6 @@
 .vscode/
 .webpage_drafts/
 *.md
+*.xlsm
+*json
+old/
