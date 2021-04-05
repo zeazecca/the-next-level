@@ -2,5 +2,6 @@
 -dce full
 -D analyzer-optimize
 -main Main
+# --interp
 --js calc.js
 --library ingot

@@ -5,7 +5,6 @@ import js.html.InputElement;
 
 using ingot.ds.Option;
 using ingot.Floats;
-using ingot.Functions;
 using ingot.Strings;
 using Lambda;
 
@@ -176,92 +175,36 @@ function interpolateFromLvl(lvl:Float, hp:Option<Float>, ac:Option<Float>, dmg:O
     return [lvl, hp, ac, dmg, hit];
 }
 
-function computeProd(hp:Option<Float>, ac:Option<Float>, dmg:Option<Float>, hit:Option<Float>):Float {
-    return switch [hp, ac, dmg, hit] {
-        case [Some(hpVal), _, Some(dmgVal), _]: computeEndurance(data[closestIndex(HP, hpVal)], hp, ac, dmg,
-                hit) * computeFerocity(data[closestIndex(DMG, dmgVal)], hp, ac, dmg, hit);
-        case [Some(hpVal), _, _, _]:
-            final entry = data[closestIndex(HP, hpVal)];
-            computeEndurance(entry, hp, ac, dmg, hit) * computeFerocity(entry, hp, ac, dmg, hit);
-        case [_, _, Some(dmgVal), _]:
-            final entry = data[closestIndex(DMG, dmgVal)];
-            computeEndurance(entry, hp, ac, dmg, hit) * computeFerocity(entry, hp, ac, dmg, hit);
-        case _:
-            final entry = data[closestIndex(LVL, 1.0)];
-            computeEndurance(entry, hp, ac, dmg, hit) * computeFerocity(entry, hp, ac, dmg, hit);
-    }
-    // final optEnd = switch hp {
-    //     case Some(hpVal):
-    //         final entry = data[closestIndex(HP, hpVal)];
-    //         switch ac {
-    //             case Some(acVal): Some(computeEndurance(entry, hp, ac, dmg, hit));
-    //             case None: Some(hpVal / DEFAULT_PLAYER_HITPROB);
-    //         }
-    //     case None: None;
-    // }
-    // final optFer = switch dmg {
-    //     case Some(dmgVal):
-    //         final entry = data[closestIndex(DMG, dmgVal)];
-    //         switch hit {
-    //             case Some(hitVal): Some(computeFerocity(entry, hp, ac, dmg, hit));
-    //             case None: Some(dmgVal * DEFAULT_CREATURE_HITPROB);
-    //         }
-    //     case None: None;
-    // }
-    // var endurance:Float;
-    // var ferocity:Float;
-    // switch [optEnd, optFer] {
-    //     case [Some(end), None]:
-    //         endurance = end;
-    //         ferocity = defaultFerocity(entryByEndurance(end));
-    //     case [None, Some(fer)]:
-    //         endurance = defaultEndurance(entryByFerocity(fer));
-    //         ferocity = fer;
-    //     case [None, None]:
-    //         final entry = data[closestIndex(LVL, 1.0)];
-    //         endurance = defaultEndurance(entry);
-    //         ferocity = defaultFerocity(entry);
-    //     case [Some(end), Some(fer)]:
-    //         endurance = end;
-    //         ferocity = fer;
-    // }
-    // return endurance * ferocity;
-    // final entry = data[closestIndex(LVL, estimatedLvl)];
-    // final optEndurance = switch [hp, ac, dmg, hit] {
-    //     case [Some(_), Some(_), _, _]: Some(computeEndurance(entry, hp, ac, dmg, hit));
-    //     case [Some(hpVal), _, _, _]: Some(hpVal / DEFAULT_PLAYER_HITPROB);
-    //     case [_, _, _, _]: None;
-    // }
-    // final optFerocity = switch [hp, ac, dmg, hit] {
-    //     case [_, _, Some(_), Some(_)]: Some(computeFerocity(entry, hp, ac, dmg, hit));
-    //     case [_, _, Some(dmgVal), _]: Some(dmgVal * DEFAULT_CREATURE_HITPROB);
-    //     case [_, _, _, _]: None;
-    // }
-    // var endurance:Float;
-    // var ferocity:Float;
-    // switch [optEndurance, optFerocity] {
-    //     case [Some(end), None]:
-    //         endurance = end;
-    //         ferocity = defaultFerocity(entryByEndurance(end));
-    //     case [None, Some(fer)]:
-    //         endurance = defaultEndurance(entryByFerocity(fer));
-    //         ferocity = fer;
-    //     case [None, None]:
-    //         final entry = data[closestIndex(LVL, 1.0)];
-    //         endurance = defaultEndurance(entry);
-    //         ferocity = defaultFerocity(entry);
-    //     case [Some(end), Some(fer)]:
-    //         endurance = end;
-    //         ferocity = fer;
-    // }
-    // return endurance * ferocity;
+// function computeProd(hp:Option<Float>, ac:Option<Float>, dmg:Option<Float>, hit:Option<Float>):Float return switch [hp, ac, dmg, hit] {
+//     case [Some(hpVal), _, Some(dmgVal), _]: computeEndurance(data[closestIndex(HP, hpVal)], hp, ac, dmg,
+//             hit) * computeFerocity(data[closestIndex(DMG, dmgVal)], hp, ac, dmg, hit);
+//     case [Some(hpVal), _, _, _]:
+//         final entry = data[closestIndex(HP, hpVal)];
+//         computeEndurance(entry, hp, ac, dmg, hit) * computeFerocity(entry, hp, ac, dmg, hit);
+//     case [_, _, Some(dmgVal), _]:
+//         final entry = data[closestIndex(DMG, dmgVal)];
+//         computeEndurance(entry, hp, ac, dmg, hit) * computeFerocity(entry, hp, ac, dmg, hit);
+//     case _:
+//         final entry = data[closestIndex(LVL, 1.0)];
+//         computeEndurance(entry, hp, ac, dmg, hit) * computeFerocity(entry, hp, ac, dmg, hit);
+// }
+function computeProd(lvl:Float, hp:Option<Float>, ac:Option<Float>, dmg:Option<Float>, hit:Option<Float>):Float {
+    final entry = data[closestIndex(LVL, lvl)];
+    return computeEndurance(entry, hp, ac, dmg, hit) * computeFerocity(entry, hp, ac, dmg, hit);
 }
 
 function computeLvl(lvl:Option<Float>, hp:Option<Float>, ac:Option<Float>, dmg:Option<Float>, hit:Option<Float>):Float return switch lvl {
     case Some(lvl): lvl;
     case None:
-        final prod = computeProd(hp, ac, dmg, hit);
-        return lvlByProd(prod);
+        final levels = data.map(entry -> {
+            final values = interpolateFromLvl(entry[LVL], hp, ac, dmg, hit);
+            final prod = computeProd(values[LVL], Some(values[HP]), Some(values[AC]), Some(values[DMG]), Some(values[HIT]));
+            lvlByProd(prod);
+        });
+        return if (levels.length & 0x1 == 0) {
+            final half = (levels.length / 2).int();
+            levels[half] + levels[half + 1] / 2;
+        } else levels[(levels.length / 2).int()];
 }
 
 inline function interpolate(lvl:Option<Float>, hp:Option<Float>, ac:Option<Float>, dmg:Option<Float>,
@@ -292,7 +235,7 @@ function calculator(lvl:FloatAdapter, hp:FloatAdapter, ac:FloatAdapter, dmg:Floa
 
 function main():Void {
     #if eval
-    trace(interpolate(None, Some(70), Some(12), Some(7.5), Some(9)));
+    trace(interpolate(None, Some(70), Some(12), Some(7.5), Some(12)));
     #elseif js
     final lvlInput = cast Browser.document.getElementById("level");
     final hpInput = cast Browser.document.getElementById("hp");

@@ -196,29 +196,31 @@ function Main_interpolateFromLvl(lvl,hp,ac,dmg,hit) {
 	}
 	return [lvl,hp1,ac1,dmg1,hit1];
 }
-function Main_computeProd(hp,ac,dmg,hit) {
-	if(hp._hx_index == 0) {
-		var _g = hp.value;
-		if(dmg._hx_index == 0) {
-			return Main_computeEndurance(Main_data[Main_closestIndex(Main_HP,_g)],hp,ac,dmg,hit) * Main_computeFerocity(Main_data[Main_closestIndex(Main_DMG,dmg.value)],hp,ac,dmg,hit);
-		} else {
-			var entry = Main_data[Main_closestIndex(Main_HP,_g)];
-			return Main_computeEndurance(entry,hp,ac,dmg,hit) * Main_computeFerocity(entry,hp,ac,dmg,hit);
-		}
-	} else if(dmg._hx_index == 0) {
-		var entry = Main_data[Main_closestIndex(Main_DMG,dmg.value)];
-		return Main_computeEndurance(entry,hp,ac,dmg,hit) * Main_computeFerocity(entry,hp,ac,dmg,hit);
-	} else {
-		var entry = Main_data[Main_closestIndex(Main_LVL,1.0)];
-		return Main_computeEndurance(entry,hp,ac,dmg,hit) * Main_computeFerocity(entry,hp,ac,dmg,hit);
-	}
+function Main_computeProd(lvl,hp,ac,dmg,hit) {
+	var entry = Main_data[Main_closestIndex(Main_LVL,lvl)];
+	return Main_computeEndurance(entry,hp,ac,dmg,hit) * Main_computeFerocity(entry,hp,ac,dmg,hit);
 }
 function Main_computeLvl(lvl,hp,ac,dmg,hit) {
 	switch(lvl._hx_index) {
 	case 0:
 		return lvl.value;
 	case 1:
-		return Main_lvlByProd(Main_computeProd(hp,ac,dmg,hit));
+		var _this = Main_data;
+		var result = new Array(_this.length);
+		var _g = 0;
+		var _g1 = _this.length;
+		while(_g < _g1) {
+			var i = _g++;
+			var values = Main_interpolateFromLvl(_this[i][Main_LVL],hp,ac,dmg,hit);
+			result[i] = Main_lvlByProd(Main_computeProd(values[Main_LVL],ingot_ds_Option.Some(values[Main_HP]),ingot_ds_Option.Some(values[Main_AC]),ingot_ds_Option.Some(values[Main_DMG]),ingot_ds_Option.Some(values[Main_HIT])));
+		}
+		if((result.length & 1) == 0) {
+			var half = result.length / 2 | 0;
+			return result[half] + result[half + 1] / 2;
+		} else {
+			return result[result.length / 2 | 0];
+		}
+		break;
 	}
 }
 function Main_calculator(lvl,hp,ac,dmg,hit) {
