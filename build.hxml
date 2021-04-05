@@ -3,5 +3,4 @@
 -D analyzer-optimize
 -main Main
 --js calc.js
-# --interp
 --library ingot

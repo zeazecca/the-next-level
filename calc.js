@@ -3,11 +3,6 @@
 var $estr = function() { return js_Boot.__string_rec(this,''); },$hxEnums = $hxEnums || {},$_;
 var Lambda = function() { };
 Lambda.__name__ = true;
-Lambda.fold = function(it,f,first) {
-	var x = $getIterator(it);
-	while(x.hasNext()) first = f(x.next(),first);
-	return first;
-};
 Lambda.foldi = function(it,f,first) {
 	var i = 0;
 	var x = $getIterator(it);
@@ -37,24 +32,6 @@ function Main_closestIndex(type,target) {
 			return bestIndex;
 		}
 	},0);
-}
-function Main_entryByEndurance(end) {
-	return Lambda.fold(Main_data,function(entry,best) {
-		if(Math.abs(entry[Main_HP] / Main_DEFAULT_PLAYER_HITPROB - end) < Math.abs(best[Main_HP] / Main_DEFAULT_PLAYER_HITPROB - end)) {
-			return entry;
-		} else {
-			return best;
-		}
-	},Main_data[0]);
-}
-function Main_entryByFerocity(fer) {
-	return Lambda.fold(Main_data,function(entry,best) {
-		if(Math.abs(entry[Main_DMG] * Main_DEFAULT_CREATURE_HITPROB - fer) < Math.abs(best[Main_DMG] * Main_DEFAULT_CREATURE_HITPROB - fer)) {
-			return entry;
-		} else {
-			return best;
-		}
-	},Main_data[0]);
 }
 function Main_lvlByProd(prod) {
 	var _g_current = 0;
@@ -219,49 +196,29 @@ function Main_interpolateFromLvl(lvl,hp,ac,dmg,hit) {
 	}
 	return [lvl,hp1,ac1,dmg1,hit1];
 }
-function Main_computeProd(estimatedLvl,hp,ac,dmg,hit) {
-	var entry = Main_data[Main_closestIndex(Main_LVL,estimatedLvl)];
-	var optEndurance = hp._hx_index == 0 ? ac._hx_index == 0 ? ingot_ds_Option.Some(Main_computeEndurance(entry,hp,ac,dmg,hit)) : ingot_ds_Option.Some(hp.value / Main_DEFAULT_PLAYER_HITPROB) : ingot_ds_Option.None;
-	var optFerocity = dmg._hx_index == 0 ? hit._hx_index == 0 ? ingot_ds_Option.Some(Main_computeFerocity(entry,hp,ac,dmg,hit)) : ingot_ds_Option.Some(dmg.value * Main_DEFAULT_CREATURE_HITPROB) : ingot_ds_Option.None;
-	var endurance;
-	var ferocity;
-	switch(optEndurance._hx_index) {
-	case 0:
-		var _g = optEndurance.value;
-		switch(optFerocity._hx_index) {
-		case 0:
-			endurance = _g;
-			ferocity = optFerocity.value;
-			break;
-		case 1:
-			endurance = _g;
-			ferocity = Main_defaultFerocity(Main_entryByEndurance(_g));
-			break;
+function Main_computeProd(hp,ac,dmg,hit) {
+	if(hp._hx_index == 0) {
+		var _g = hp.value;
+		if(dmg._hx_index == 0) {
+			return Main_computeEndurance(Main_data[Main_closestIndex(Main_HP,_g)],hp,ac,dmg,hit) * Main_computeFerocity(Main_data[Main_closestIndex(Main_DMG,dmg.value)],hp,ac,dmg,hit);
+		} else {
+			var entry = Main_data[Main_closestIndex(Main_HP,_g)];
+			return Main_computeEndurance(entry,hp,ac,dmg,hit) * Main_computeFerocity(entry,hp,ac,dmg,hit);
 		}
-		break;
-	case 1:
-		switch(optFerocity._hx_index) {
-		case 0:
-			var _g = optFerocity.value;
-			endurance = Main_defaultEndurance(Main_entryByFerocity(_g));
-			ferocity = _g;
-			break;
-		case 1:
-			var entry = Main_data[Main_closestIndex(Main_LVL,1.0)];
-			endurance = Main_defaultEndurance(entry);
-			ferocity = Main_defaultFerocity(entry);
-			break;
-		}
-		break;
+	} else if(dmg._hx_index == 0) {
+		var entry = Main_data[Main_closestIndex(Main_DMG,dmg.value)];
+		return Main_computeEndurance(entry,hp,ac,dmg,hit) * Main_computeFerocity(entry,hp,ac,dmg,hit);
+	} else {
+		var entry = Main_data[Main_closestIndex(Main_LVL,1.0)];
+		return Main_computeEndurance(entry,hp,ac,dmg,hit) * Main_computeFerocity(entry,hp,ac,dmg,hit);
 	}
-	return endurance * ferocity;
 }
 function Main_computeLvl(lvl,hp,ac,dmg,hit) {
 	switch(lvl._hx_index) {
 	case 0:
 		return lvl.value;
 	case 1:
-		return Main_lvlByProd(Main_computeProd(1.0,hp,ac,dmg,hit));
+		return Main_lvlByProd(Main_computeProd(hp,ac,dmg,hit));
 	}
 }
 function Main_calculator(lvl,hp,ac,dmg,hit) {
