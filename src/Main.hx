@@ -5,38 +5,6 @@ import js.html.InputElement;
 
 using ingot.Core;
 
-// lvl hp ac dmg hit    ---
-// lvl hp ac dmg        calc end -> fer = prod / end -> hit = dmg / fer
-// lvl hp ac     hit    calc end -> fer = prod / end -> dmg = fer / hit
-// lvl hp ac            calc end -> fer = prod / end -> hit = lvl default, dmg = fer / hit
-// lvl hp    dmg hit    calc fer -> end = prod / fer -> ac = end / hp
-// lvl hp    dmg
-// lvl hp        hit
-// lvl hp
-// lvl    ac dmg hit    calc fer -> end = prod / fer -> hp = end * ac
-// lvl    ac dmg
-// lvl    ac     hit
-// lvl    ac
-// lvl       dmg hit    calc fer -> end = prod / fer -> ac = lvl default, hp = end * ac
-// lvl       dmg
-// lvl           hit
-// lvl
-//     hp ac dmg hit
-//     hp ac dmg
-//     hp ac     hit
-//     hp ac            use hp to estimate lvl -> read end from table -> adjust lvl w/ ac score -> interpolate the rest
-//     hp    dmg hit
-//     hp    dmg
-//     hp        hit
-//     hp               match hp to lvl
-//        ac dmg hit
-//        ac dmg
-//        ac     hit
-//        ac            match ac to lvl
-//           dmg hit    use dmg to estimate lvl -> read fer from table -> adjust lvl w/ hit score -> interpolate the rest
-//           dmg        match dmg to lvl
-//               hit    match hit to lvl
-//                      default (lvl 1)
 final data: Array<Array<Float>> = [
     [-3.0, 14.81336806, 14.0, 1.807830801, 5.0],
     [-2.0, 16.22723167, 14.0, 1.98037942, 5.0],
@@ -90,20 +58,6 @@ function closestIndex(type: Array<Float> -> Float, target: Float): Int {
         .fold((entry, best) -> (type(entry.value) - target).abs() < (type(data[best]) - target).abs() ? entry.key : best, 0);
 }
 
-// function lvlByProd(prod:Float):Float {
-//     for (index => entry in data) {
-//         final lvlProd = entry[HP] / DEFAULT_PLAYER_HITPROB * entry[DMG] * DEFAULT_CREATURE_HITPROB;
-//         switch lvlProd >= prod {
-//             case true if (index == 0): return entry[LVL];
-//             case true:
-//                 final prevProd = data[index - 1][HP] / DEFAULT_PLAYER_HITPROB * data[index - 1][DMG] * DEFAULT_CREATURE_HITPROB;
-//                 final range = lvlProd - prevProd;
-//                 return data[index - 1][LVL] + (prod - prevProd) / range;
-//             case _:
-//         }
-//     }
-//     return data[data.length - 1][LVL];
-// }
 function defaultEndurance(entry: Array<Float>): Float {
     return entry[HP] / DEFAULT_PLAYER_HITPROB;
 }
@@ -160,19 +114,6 @@ function interpolateFromLvl(lvl: Float, hp: Maybe<Float>, ac: Maybe<Float>, dmg:
     return [lvl, hp, ac, dmg, hit];
 }
 
-// function computeProd(hp:Maybe<Float>, ac:Maybe<Float>, dmg:Maybe<Float>, hit:Maybe<Float>):Float return switch [hp, ac, dmg, hit] {
-//     case [Just(hpVal), _, Just(dmgVal), _]: computeEndurance(data[closestIndex(HP, hpVal)], hp, ac, dmg,
-//             hit) * computeFerocity(data[closestIndex(DMG, dmgVal)], hp, ac, dmg, hit);
-//     case [Just(hpVal), _, _, _]:
-//         final entry = data[closestIndex(HP, hpVal)];
-//         computeEndurance(entry, hp, ac, dmg, hit) * computeFerocity(entry, hp, ac, dmg, hit);
-//     case [_, _, Just(dmgVal), _]:
-//         final entry = data[closestIndex(DMG, dmgVal)];
-//         computeEndurance(entry, hp, ac, dmg, hit) * computeFerocity(entry, hp, ac, dmg, hit);
-//     case _:
-//         final entry = data[closestIndex(LVL, 1.0)];
-//         computeEndurance(entry, hp, ac, dmg, hit) * computeFerocity(entry, hp, ac, dmg, hit);
-// }
 function computeProd(lvl: Float, hp: Maybe<Float>, ac: Maybe<Float>, dmg: Maybe<Float>, hit: Maybe<Float>): Float {
     final entry = data[closestIndex(entry -> entry[LVL], lvl)];
     return computeEndurance(entry, hp, ac, dmg, hit) * computeFerocity(entry, hp, ac, dmg, hit);
@@ -182,11 +123,6 @@ function computeLvl(lvl: Maybe<Float>, hp: Maybe<Float>, ac: Maybe<Float>, dmg: 
     return switch lvl {
         case Just(lvl): lvl;
         case None:
-            // [lvl, hp, ac, dmg, hit].iterator()
-            //     .indexed()
-            //     .filter(iv -> iv.value.isNone())
-            //     .map(iv -> iv.key)
-            //     .toArray();
             final idx = data.iterator()
                 .indexed()
                 .fold((entry, best: { idx: Int, err: Float }) -> {
@@ -196,15 +132,6 @@ function computeLvl(lvl: Maybe<Float>, hp: Maybe<Float>, ac: Maybe<Float>, dmg: 
                 }, { idx: 0, err: Math.POSITIVE_INFINITY })
                 .idx;
             data[idx][LVL];
-            // final levels = data.map(entry -> {
-            //     final values = interpolateFromLvl(entry[LVL], hp, ac, dmg, hit);
-            //     final prod = computeProd(values[LVL], Just(values[HP]), Just(values[AC]), Just(values[DMG]), Just(values[HIT]));
-            //     lvlByProd(prod);
-            // });
-            // return if (levels.length & 0x1 == 0) {
-            //     final half = (levels.length / 2).floor();
-            //     levels[half] + levels[half + 1] / 2;
-            // } else levels[(levels.length / 2).floor()];
     }
 }
 
