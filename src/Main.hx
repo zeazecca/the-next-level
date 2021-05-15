@@ -37,8 +37,7 @@ using ingot.Core;
 //           dmg        match dmg to lvl
 //               hit    match hit to lvl
 //                      default (lvl 1)
-
-final data:Array<Array<Float>> = [
+final data: Array<Array<Float>> = [
     [-3.0, 14.81336806, 14.0, 1.807830801, 5.0],
     [-2.0, 16.22723167, 14.0, 1.98037942, 5.0],
     [-1.0, 17.77604167, 14.0, 2.169396961, 5.0],
@@ -74,18 +73,18 @@ final data:Array<Array<Float>> = [
     [30.0, 460.7569377, 20.0, 169.6942539, 11.0]
 ];
 
-final LVL:Int = 0;
-final HP:Int = 1;
-final AC:Int = 2;
-final DMG:Int = 3;
-final HIT:Int = 4;
-final DEFAULT_PLAYER_HITPROB:Float = 0.6;
-final DEFAULT_CREATURE_HITPROB:Float = 0.6;
-final MIN_HITPROB:Float = 0.05;
-final MAX_HITPROB:Float = 0.95;
-final HITPROB_INCREMENTS:Float = 0.05;
+final LVL: Int = 0;
+final HP: Int = 1;
+final AC: Int = 2;
+final DMG: Int = 3;
+final HIT: Int = 4;
+final DEFAULT_PLAYER_HITPROB: Float = 0.6;
+final DEFAULT_CREATURE_HITPROB: Float = 0.6;
+final MIN_HITPROB: Float = 0.05;
+final MAX_HITPROB: Float = 0.95;
+final HITPROB_INCREMENTS: Float = 0.05;
 
-function closestIndex(type:Array<Float> -> Float, target:Float):Int {
+function closestIndex(type: Array<Float> -> Float, target: Float): Int {
     return data.iterator()
         .indexed()
         .fold((entry, best) -> (type(entry.value) - target).abs() < (type(data[best]) - target).abs() ? entry.key : best, 0);
@@ -105,48 +104,51 @@ function closestIndex(type:Array<Float> -> Float, target:Float):Int {
 //     }
 //     return data[data.length - 1][LVL];
 // }
-
-function defaultEndurance(entry:Array<Float>):Float {
+function defaultEndurance(entry: Array<Float>): Float {
     return entry[HP] / DEFAULT_PLAYER_HITPROB;
 }
 
-function defaultFerocity(entry:Array<Float>):Float {
+function defaultFerocity(entry: Array<Float>): Float {
     return entry[DMG] * DEFAULT_CREATURE_HITPROB;
 }
 
-function prod(entry:Array<Float>):Float {
+function prod(entry: Array<Float>): Float {
     return defaultEndurance(entry) * defaultFerocity(entry);
 }
 
-function playerHitprob(entry:Array<Float>, ac:Maybe<Float>):Float {
+function playerHitprob(entry: Array<Float>, ac: Maybe<Float>): Float {
     return ac.mapOr(ac -> (DEFAULT_PLAYER_HITPROB + (entry[AC] - ac) * HITPROB_INCREMENTS).clamp(MIN_HITPROB, MAX_HITPROB), DEFAULT_PLAYER_HITPROB);
 }
 
-function computeAcFromHp(lvlEntry:Array<Float>, endurance:Float, hp:Float) {
+function computeAcFromHp(lvlEntry: Array<Float>, endurance: Float, hp: Float) {
     return lvlEntry[AC] + (DEFAULT_PLAYER_HITPROB - (hp / endurance).clamp(MIN_HITPROB, MAX_HITPROB)) / HITPROB_INCREMENTS;
 }
 
-function computeHitFromDmg(lvlEntry:Array<Float>, ferocity:Float, dmg:Float) {
+function computeHitFromDmg(lvlEntry: Array<Float>, ferocity: Float, dmg: Float) {
     return lvlEntry[HIT] + ((ferocity / dmg).clamp(MIN_HITPROB, MAX_HITPROB) - DEFAULT_CREATURE_HITPROB) / HITPROB_INCREMENTS;
 }
 
-function creatureHitprob(entry:Array<Float>, hit:Maybe<Float>):Float {
+function creatureHitprob(entry: Array<Float>, hit: Maybe<Float>): Float {
     return hit.mapOr(hit -> (DEFAULT_CREATURE_HITPROB + (hit - entry[HIT]) * HITPROB_INCREMENTS).clamp(MIN_HITPROB, MAX_HITPROB), DEFAULT_CREATURE_HITPROB);
 }
 
-function computeEndurance(lvlEntry:Array<Float>, hp:Maybe<Float>, ac:Maybe<Float>, dmg:Maybe<Float>, hit:Maybe<Float>):Float return switch [hp, ac, dmg, hit] {
-    case [Just(hp), Just(ac), _, _]: hp / playerHitprob(lvlEntry, Just(ac));
-    case [_, _, Just(_), Just(_)]: prod(lvlEntry) / computeFerocity(lvlEntry, hp, ac, dmg, hit);
-    case _: defaultEndurance(lvlEntry);
+function computeEndurance(lvlEntry: Array<Float>, hp: Maybe<Float>, ac: Maybe<Float>, dmg: Maybe<Float>, hit: Maybe<Float>): Float {
+    return switch [hp, ac, dmg, hit] {
+        case [Just(hp), Just(ac), _, _]: hp / playerHitprob(lvlEntry, Just(ac));
+        case [_, _, Just(_), Just(_)]: prod(lvlEntry) / computeFerocity(lvlEntry, hp, ac, dmg, hit);
+        case _: defaultEndurance(lvlEntry);
+    }
 }
 
-function computeFerocity(lvlEntry:Array<Float>, hp:Maybe<Float>, ac:Maybe<Float>, dmg:Maybe<Float>, hit:Maybe<Float>):Float return switch [hp, ac, dmg, hit] {
-    case [_, _, Just(dmg), Just(hit)]: dmg * creatureHitprob(lvlEntry, Just(hit));
-    case [Just(_), Just(_), _, _]: prod(lvlEntry) / computeEndurance(lvlEntry, hp, ac, dmg, hit);
-    case _: defaultFerocity(lvlEntry);
+function computeFerocity(lvlEntry: Array<Float>, hp: Maybe<Float>, ac: Maybe<Float>, dmg: Maybe<Float>, hit: Maybe<Float>): Float {
+    return switch [hp, ac, dmg, hit] {
+        case [_, _, Just(dmg), Just(hit)]: dmg * creatureHitprob(lvlEntry, Just(hit));
+        case [Just(_), Just(_), _, _]: prod(lvlEntry) / computeEndurance(lvlEntry, hp, ac, dmg, hit);
+        case _: defaultFerocity(lvlEntry);
+    }
 }
 
-function interpolateFromLvl(lvl:Float, hp:Maybe<Float>, ac:Maybe<Float>, dmg:Maybe<Float>, hit:Maybe<Float>):Array<Float> {
+function interpolateFromLvl(lvl: Float, hp: Maybe<Float>, ac: Maybe<Float>, dmg: Maybe<Float>, hit: Maybe<Float>): Array<Float> {
     final lvlEntry = data[closestIndex(entry -> entry[LVL], lvl)];
     final endurance = computeEndurance(lvlEntry, hp, ac, dmg, hit);
     final ferocity = computeFerocity(lvlEntry, hp, ac, dmg, hit);
@@ -171,57 +173,63 @@ function interpolateFromLvl(lvl:Float, hp:Maybe<Float>, ac:Maybe<Float>, dmg:May
 //         final entry = data[closestIndex(LVL, 1.0)];
 //         computeEndurance(entry, hp, ac, dmg, hit) * computeFerocity(entry, hp, ac, dmg, hit);
 // }
-function computeProd(lvl:Float, hp:Maybe<Float>, ac:Maybe<Float>, dmg:Maybe<Float>, hit:Maybe<Float>):Float {
+function computeProd(lvl: Float, hp: Maybe<Float>, ac: Maybe<Float>, dmg: Maybe<Float>, hit: Maybe<Float>): Float {
     final entry = data[closestIndex(entry -> entry[LVL], lvl)];
     return computeEndurance(entry, hp, ac, dmg, hit) * computeFerocity(entry, hp, ac, dmg, hit);
 }
 
-function computeLvl(lvl:Maybe<Float>, hp:Maybe<Float>, ac:Maybe<Float>, dmg:Maybe<Float>, hit:Maybe<Float>):Float return switch lvl {
-    case Just(lvl): lvl;
-    case None:
-        // [lvl, hp, ac, dmg, hit].iterator()
-        //     .indexed()
-        //     .filter(iv -> iv.value.isNone())
-        //     .map(iv -> iv.key)
-        //     .toArray();
-        final idx = data.iterator()
-            .indexed()
-            .fold((entry, best:{ idx:Int, err:Float }) -> {
-                final values = interpolateFromLvl(entry.value[LVL], hp, ac, dmg, hit);
-                final err = (HP...values.length).fold((i, acc) -> acc + (1 - values[i] / entry.value[i]).pow(2.0), 0.0);
-                err < best.err ? { idx: entry.key, err: err } : best;
-            }, { idx: 0, err: Math.POSITIVE_INFINITY })
-            .idx;
-        data[idx][LVL];
-        // final levels = data.map(entry -> {
-        //     final values = interpolateFromLvl(entry[LVL], hp, ac, dmg, hit);
-        //     final prod = computeProd(values[LVL], Just(values[HP]), Just(values[AC]), Just(values[DMG]), Just(values[HIT]));
-        //     lvlByProd(prod);
-        // });
-        // return if (levels.length & 0x1 == 0) {
-        //     final half = (levels.length / 2).floor();
-        //     levels[half] + levels[half + 1] / 2;
-        // } else levels[(levels.length / 2).floor()];
+function computeLvl(lvl: Maybe<Float>, hp: Maybe<Float>, ac: Maybe<Float>, dmg: Maybe<Float>, hit: Maybe<Float>): Float {
+    return switch lvl {
+        case Just(lvl): lvl;
+        case None:
+            // [lvl, hp, ac, dmg, hit].iterator()
+            //     .indexed()
+            //     .filter(iv -> iv.value.isNone())
+            //     .map(iv -> iv.key)
+            //     .toArray();
+            final idx = data.iterator()
+                .indexed()
+                .fold((entry, best: { idx: Int, err: Float }) -> {
+                    final values = interpolateFromLvl(entry.value[LVL], hp, ac, dmg, hit);
+                    final err = (HP...values.length).fold((i, acc) -> acc + (1 - values[i] / entry.value[i]).pow(2.0), 0.0);
+                    err < best.err ? { idx: entry.key, err: err } : best;
+                }, { idx: 0, err: Math.POSITIVE_INFINITY })
+                .idx;
+            data[idx][LVL];
+            // final levels = data.map(entry -> {
+            //     final values = interpolateFromLvl(entry[LVL], hp, ac, dmg, hit);
+            //     final prod = computeProd(values[LVL], Just(values[HP]), Just(values[AC]), Just(values[DMG]), Just(values[HIT]));
+            //     lvlByProd(prod);
+            // });
+            // return if (levels.length & 0x1 == 0) {
+            //     final half = (levels.length / 2).floor();
+            //     levels[half] + levels[half + 1] / 2;
+            // } else levels[(levels.length / 2).floor()];
+    }
 }
 
-inline function interpolate(lvl:Maybe<Float>, hp:Maybe<Float>, ac:Maybe<Float>, dmg:Maybe<Float>, hit:Maybe<Float>):Array<Float> {
+inline function interpolate(lvl: Maybe<Float>, hp: Maybe<Float>, ac: Maybe<Float>, dmg: Maybe<Float>, hit: Maybe<Float>): Array<Float> {
     return interpolateFromLvl(computeLvl(lvl, hp, ac, dmg, hit), hp, ac, dmg, hit);
 }
 
 #if js
 class FloatAdapter {
-    private final input:InputElement;
+    private final input: InputElement;
 
-    public function new(input:InputElement) {
+    public function new(input: InputElement) {
         this.input = input;
     }
 
-    public function get():Maybe<Float> return input.value.toFloat();
+    public function get(): Maybe<Float> {
+        return input.value.toFloat();
+    }
 
-    public function set(f:Float):Void input.placeholder = f.toStr(1);
+    public function set(f: Float): Void {
+        input.placeholder = f.toStr(1);
+    }
 }
 
-function calculator(lvl:FloatAdapter, hp:FloatAdapter, ac:FloatAdapter, dmg:FloatAdapter, hit:FloatAdapter):Void {
+function calculator(lvl: FloatAdapter, hp: FloatAdapter, ac: FloatAdapter, dmg: FloatAdapter, hit: FloatAdapter): Void {
     final outputs = interpolate(lvl.get(), hp.get(), ac.get(), dmg.get(), hit.get());
     lvl.set(outputs[LVL]);
     hp.set(outputs[HP]);
@@ -231,7 +239,7 @@ function calculator(lvl:FloatAdapter, hp:FloatAdapter, ac:FloatAdapter, dmg:Floa
 }
 #end
 
-function main():Void {
+function main(): Void {
     #if eval
     trace(interpolate(None, Just(70), Just(12), Just(7.5), Just(12)));
     #elseif js

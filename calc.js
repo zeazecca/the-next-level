@@ -10,42 +10,7 @@ FloatAdapter.prototype = {
 		return ingot_ext_Strings.toFloat(this.input.value);
 	}
 	,set: function(f) {
-		var f1 = f;
-		var tmp;
-		if(f1 == 0.0) {
-			tmp = "0." + ingot_ext_Strings.repeat("0",1);
-		} else {
-			var buf_b = "";
-			if(f1 < 0.0) {
-				buf_b += String.fromCodePoint(45);
-			}
-			if(f1 < 0) {
-				f1 = -f1;
-			}
-			var p = Math.pow(10,1);
-			var ipart = Math.floor(f1);
-			var fpart = Math.round((f1 - ipart) * p);
-			buf_b += Std.string(ipart);
-			if(fpart == 0) {
-				buf_b += String.fromCodePoint(46);
-				var _g = 0;
-				var _g1 = 1;
-				while(_g < _g1) {
-					_g++;
-					buf_b += String.fromCodePoint(48);
-				}
-			} else {
-				buf_b += ".";
-				p /= 10;
-				while(fpart < p) {
-					p /= 10;
-					buf_b += String.fromCodePoint(48);
-				}
-				buf_b += Std.string(fpart);
-			}
-			tmp = buf_b;
-		}
-		this.input.placeholder = tmp;
+		this.input.placeholder = ingot_ext_Floats.toStr(f,1);
 	}
 };
 function Main_closestIndex(type,target) {
@@ -222,11 +187,6 @@ function Main_main() {
 	hitInput.addEventListener("change",calculator);
 }
 Math.__name__ = true;
-var Std = function() { };
-Std.__name__ = true;
-Std.string = function(s) {
-	return js_Boot.__string_rec(s,"");
-};
 var haxe_iterators_ArrayIterator = function(array) {
 	this.current = 0;
 	this.array = array;
@@ -254,6 +214,47 @@ ingot_ext_Floats.clamp = function(f,min,max) {
 	} else {
 		return f1;
 	}
+};
+ingot_ext_Floats.toStr = function(f,precision) {
+	if(isNaN(f)) {
+		return "NaN";
+	}
+	if(f == 0.0) {
+		return "0." + ingot_ext_Strings.repeat("0",precision);
+	}
+	var buf_b = "";
+	if(f < 0.0) {
+		buf_b += String.fromCodePoint(45);
+	}
+	if(!isFinite(f)) {
+		buf_b += "inf";
+		return buf_b;
+	}
+	if(f < 0) {
+		f = -f;
+	}
+	var p = Math.pow(10,precision);
+	var ipart = Math.floor(f);
+	var fpart = Math.round((f - ipart) * p);
+	buf_b += ipart == null ? "null" : "" + ipart;
+	if(fpart == 0) {
+		buf_b += String.fromCodePoint(46);
+		var _g = 0;
+		var _g1 = precision;
+		while(_g < _g1) {
+			_g++;
+			buf_b += String.fromCodePoint(48);
+		}
+	} else {
+		buf_b += ".";
+		p /= 10;
+		while(fpart < p) {
+			p /= 10;
+			buf_b += String.fromCodePoint(48);
+		}
+		buf_b += fpart == null ? "null" : "" + fpart;
+	}
+	return buf_b;
 };
 var ingot_ext_Iterators = function() { };
 ingot_ext_Iterators.__name__ = true;
@@ -304,7 +305,7 @@ ingot_ext_Strings.repeat = function(str,n) {
 };
 ingot_ext_Strings.toFloat = function(str) {
 	var f = parseFloat(str);
-	if(f == null) {
+	if(isNaN(f)) {
 		return ingot_ds_Maybe.None;
 	} else {
 		return ingot_ds_Maybe.Just(f);
