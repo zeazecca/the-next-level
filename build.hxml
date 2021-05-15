@@ -4,4 +4,4 @@
 -main Main
 # --interp
 --js calc.js
---library ingot
+-L ingot
