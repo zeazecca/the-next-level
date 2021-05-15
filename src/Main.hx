@@ -46,6 +46,8 @@ final HP: Int = 1;
 final AC: Int = 2;
 final DMG: Int = 3;
 final HIT: Int = 4;
+final ENDURANCE: Int = 5;
+final FEROCITY: Int = 6;
 final DEFAULT_PLAYER_HITPROB: Float = 0.6;
 final DEFAULT_CREATURE_HITPROB: Float = 0.6;
 final MIN_HITPROB: Float = 0.05;
@@ -58,16 +60,8 @@ function closestIndex(type: Array<Float> -> Float, target: Float): Int {
         .fold((entry, best) -> (type(entry.value) - target).abs() < (type(data[best]) - target).abs() ? entry.key : best, 0);
 }
 
-function defaultEndurance(entry: Array<Float>): Float {
-    return entry[HP] / DEFAULT_PLAYER_HITPROB;
-}
-
-function defaultFerocity(entry: Array<Float>): Float {
-    return entry[DMG] * DEFAULT_CREATURE_HITPROB;
-}
-
 function prod(entry: Array<Float>): Float {
-    return defaultEndurance(entry) * defaultFerocity(entry);
+    return entry[ENDURANCE] * entry[FEROCITY];
 }
 
 function playerHitprob(entry: Array<Float>, ac: Maybe<Float>): Float {
@@ -90,7 +84,7 @@ function computeEndurance(lvlEntry: Array<Float>, hp: Maybe<Float>, ac: Maybe<Fl
     return switch [hp, ac, dmg, hit] {
         case [Just(hp), Just(ac), _, _]: hp / playerHitprob(lvlEntry, Just(ac));
         case [_, _, Just(_), Just(_)]: prod(lvlEntry) / computeFerocity(lvlEntry, hp, ac, dmg, hit);
-        case _: defaultEndurance(lvlEntry);
+        case _: lvlEntry[ENDURANCE];
     }
 }
 
@@ -98,7 +92,7 @@ function computeFerocity(lvlEntry: Array<Float>, hp: Maybe<Float>, ac: Maybe<Flo
     return switch [hp, ac, dmg, hit] {
         case [_, _, Just(dmg), Just(hit)]: dmg * creatureHitprob(lvlEntry, Just(hit));
         case [Just(_), Just(_), _, _]: prod(lvlEntry) / computeEndurance(lvlEntry, hp, ac, dmg, hit);
-        case _: defaultFerocity(lvlEntry);
+        case _: lvlEntry[FEROCITY];
     }
 }
 
@@ -114,11 +108,6 @@ function interpolateFromLvl(lvl: Float, hp: Maybe<Float>, ac: Maybe<Float>, dmg:
     return [lvl, hp, ac, dmg, hit];
 }
 
-function computeProd(lvl: Float, hp: Maybe<Float>, ac: Maybe<Float>, dmg: Maybe<Float>, hit: Maybe<Float>): Float {
-    final entry = data[closestIndex(entry -> entry[LVL], lvl)];
-    return computeEndurance(entry, hp, ac, dmg, hit) * computeFerocity(entry, hp, ac, dmg, hit);
-}
-
 function computeLvl(lvl: Maybe<Float>, hp: Maybe<Float>, ac: Maybe<Float>, dmg: Maybe<Float>, hit: Maybe<Float>): Float {
     return switch lvl {
         case Just(lvl): lvl;
@@ -126,7 +115,10 @@ function computeLvl(lvl: Maybe<Float>, hp: Maybe<Float>, ac: Maybe<Float>, dmg: 
             final idx = data.iterator()
                 .indexed()
                 .fold((entry, best: { idx: Int, err: Float }) -> {
-                    final values = interpolateFromLvl(entry.value[LVL], hp, ac, dmg, hit);
+                    final values = interpolateFromLvl(entry.value[LVL], hp, ac, dmg, hit).concat([
+                        computeEndurance(entry.value, hp, ac, dmg, hit),
+                        computeFerocity(entry.value, hp, ac, dmg, hit)
+                    ]);
                     final err = (HP...values.length).fold((i, acc) -> acc + (1 - values[i] / entry.value[i]).pow(2.0), 0.0);
                     err < best.err ? { idx: entry.key, err: err } : best;
                 }, { idx: 0, err: Math.POSITIVE_INFINITY })
@@ -167,6 +159,10 @@ function calculator(lvl: FloatAdapter, hp: FloatAdapter, ac: FloatAdapter, dmg: 
 #end
 
 function main(): Void {
+    for (entry in data) {
+        entry.push(entry[HP] / DEFAULT_PLAYER_HITPROB);
+        entry.push(entry[DMG] * DEFAULT_CREATURE_HITPROB);
+    }
     #if eval
     trace(interpolate(None, Just(70), Just(12), Just(7.5), Just(12)));
     #elseif js

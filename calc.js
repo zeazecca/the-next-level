@@ -26,14 +26,8 @@ function Main_closestIndex(type,target) {
 	}
 	return first;
 }
-function Main_defaultEndurance(entry) {
-	return entry[Main_HP] / Main_DEFAULT_PLAYER_HITPROB;
-}
-function Main_defaultFerocity(entry) {
-	return entry[Main_DMG] * Main_DEFAULT_CREATURE_HITPROB;
-}
 function Main_prod(entry) {
-	return Main_defaultEndurance(entry) * Main_defaultFerocity(entry);
+	return entry[Main_ENDURANCE] * entry[Main_FEROCITY];
 }
 function Main_playerHitprob(entry,ac) {
 	return ingot_ext_Maybes.mapOr(ac,function(ac) {
@@ -59,19 +53,19 @@ function Main_computeEndurance(lvlEntry,hp,ac,dmg,hit) {
 			if(hit._hx_index == 0) {
 				return Main_prod(lvlEntry) / Main_computeFerocity(lvlEntry,hp,ac,dmg,hit);
 			} else {
-				return Main_defaultEndurance(lvlEntry);
+				return lvlEntry[Main_ENDURANCE];
 			}
 		} else {
-			return Main_defaultEndurance(lvlEntry);
+			return lvlEntry[Main_ENDURANCE];
 		}
 	} else if(dmg._hx_index == 0) {
 		if(hit._hx_index == 0) {
 			return Main_prod(lvlEntry) / Main_computeFerocity(lvlEntry,hp,ac,dmg,hit);
 		} else {
-			return Main_defaultEndurance(lvlEntry);
+			return lvlEntry[Main_ENDURANCE];
 		}
 	} else {
-		return Main_defaultEndurance(lvlEntry);
+		return lvlEntry[Main_ENDURANCE];
 	}
 }
 function Main_computeFerocity(lvlEntry,hp,ac,dmg,hit) {
@@ -82,19 +76,19 @@ function Main_computeFerocity(lvlEntry,hp,ac,dmg,hit) {
 			if(ac._hx_index == 0) {
 				return Main_prod(lvlEntry) / Main_computeEndurance(lvlEntry,hp,ac,dmg,hit);
 			} else {
-				return Main_defaultFerocity(lvlEntry);
+				return lvlEntry[Main_FEROCITY];
 			}
 		} else {
-			return Main_defaultFerocity(lvlEntry);
+			return lvlEntry[Main_FEROCITY];
 		}
 	} else if(ac._hx_index == 0) {
 		if(hp._hx_index == 0) {
 			return Main_prod(lvlEntry) / Main_computeEndurance(lvlEntry,hp,ac,dmg,hit);
 		} else {
-			return Main_defaultFerocity(lvlEntry);
+			return lvlEntry[Main_FEROCITY];
 		}
 	} else {
-		return Main_defaultFerocity(lvlEntry);
+		return lvlEntry[Main_FEROCITY];
 	}
 }
 function Main_interpolateFromLvl(lvl,hp,ac,dmg,hit) {
@@ -131,7 +125,7 @@ function Main_computeLvl(lvl,hp,ac,dmg,hit) {
 		var first = { idx : 0, err : Infinity};
 		while(iter.hasNext()) {
 			var it = iter.next();
-			var values = Main_interpolateFromLvl(it.value[Main_LVL],hp,ac,dmg,hit);
+			var values = Main_interpolateFromLvl(it.value[Main_LVL],hp,ac,dmg,hit).concat([Main_computeEndurance(it.value,hp,ac,dmg,hit),Main_computeFerocity(it.value,hp,ac,dmg,hit)]);
 			var max = values.length;
 			var it_min = Main_HP;
 			var first1 = 0.0;
@@ -161,6 +155,14 @@ function Main_calculator(lvl,hp,ac,dmg,hit) {
 	hit.set(outputs[Main_HIT]);
 }
 function Main_main() {
+	var _g = 0;
+	var _g1 = Main_data;
+	while(_g < _g1.length) {
+		var entry = _g1[_g];
+		++_g;
+		entry.push(entry[Main_HP] / Main_DEFAULT_PLAYER_HITPROB);
+		entry.push(entry[Main_DMG] * Main_DEFAULT_CREATURE_HITPROB);
+	}
 	var lvlInput = window.document.getElementById("level");
 	var hpInput = window.document.getElementById("hp");
 	var acInput = window.document.getElementById("ac");
@@ -415,6 +417,8 @@ var Main_HP = 1;
 var Main_AC = 2;
 var Main_DMG = 3;
 var Main_HIT = 4;
+var Main_ENDURANCE = 5;
+var Main_FEROCITY = 6;
 var Main_DEFAULT_PLAYER_HITPROB = 0.6;
 var Main_DEFAULT_CREATURE_HITPROB = 0.6;
 var Main_MIN_HITPROB = 0.05;
